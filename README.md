@@ -1,12 +1,37 @@
 # 🧠 Neurosurgical Knowledge Management System
 
-## Advanced AI-Powered Platform for Neurosurgical Education, Research, and Clinical Practice
+> **Advanced AI-powered platform for neurosurgical knowledge synthesis, management, and clinical decision support**
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Python](https://img.shields.io/badge/python-3.11-blue)
-![Next.js](https://img.shields.io/badge/next.js-14-black)
-![Docker](https://img.shields.io/badge/docker-ready-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
+
+## 🚀 Quick Start
+
+**Get running in 5 minutes:**
+
+```bash
+# Clone and start
+git clone https://github.com/ramihatou97/NNP.git
+cd NNP
+
+# Using Docker (easiest)
+docker compose -f docker-compose-simple.yml up -d
+
+# Or use startup scripts
+./start.sh  # Linux/Mac
+start.bat   # Windows
+
+# Access at:
+# Frontend:  http://localhost:3000
+# Backend:   http://localhost:8000
+# API Docs:  http://localhost:8000/api/docs
+```
+
+**📚 New to the system?** See [QUICKSTART.md](QUICKSTART.md) for detailed setup instructions.
+
+**🚢 Deploying to production?** See [DEPLOYMENT.md](DEPLOYMENT.md) for cloud deployment options.
 
 ## 🎯 Overview
 
