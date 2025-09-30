@@ -26,9 +26,14 @@ async def lifespan(app: FastAPI):
     """Simplified application lifecycle"""
     logger.info("Starting Neurosurgical Knowledge System...")
 
-    # Create database tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Try to create database tables (skip if database unavailable)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables initialized")
+    except Exception as e:
+        logger.warning(f"Database connection failed (will use mock data): {e}")
+        # System can still run with mock responses
 
     # Initialize AI services
     await initialize_ai_services()
@@ -38,7 +43,10 @@ async def lifespan(app: FastAPI):
     yield
 
     # Cleanup
-    await engine.dispose()
+    try:
+        await engine.dispose()
+    except:
+        pass
     logger.info("System shutdown complete")
 
 
