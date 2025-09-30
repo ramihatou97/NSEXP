@@ -19,7 +19,7 @@ import openai
 import anthropic
 import google.generativeai as genai
 
-from config.settings import settings
+from config.settings_simplified import settings
 
 logger = logging.getLogger(__name__)
 

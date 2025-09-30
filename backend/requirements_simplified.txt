@@ -29,6 +29,9 @@ httpx==0.25.2
 # Redis (Optional)
 redis[hiredis]==5.0.1
 
+# Retry logic
+tenacity==8.2.3
+
 # Testing
 pytest==7.4.3
 pytest-asyncio==0.21.1

@@ -111,6 +111,46 @@ async def delete_chapter(chapter_id: str):
     return await delete_chapter_by_id(chapter_id)
 
 
+# ============= REFERENCE ENDPOINTS (Core Functionality) =============
+
+@app.get("/api/v1/references")
+async def get_references(
+    chapter_id: str = None,
+    limit: int = 100
+):
+    """Get all references"""
+    from services.reference_service import get_all_references
+    return await get_all_references(chapter_id, limit)
+
+
+@app.post("/api/v1/references")
+async def create_reference(reference_data: dict):
+    """Create new reference"""
+    from services.reference_service import create_new_reference
+    return await create_new_reference(reference_data)
+
+
+@app.get("/api/v1/references/{reference_id}")
+async def get_reference(reference_id: str):
+    """Get specific reference"""
+    from services.reference_service import get_reference_by_id
+    return await get_reference_by_id(reference_id)
+
+
+@app.put("/api/v1/references/{reference_id}")
+async def update_reference(reference_id: str, reference_data: dict):
+    """Update reference"""
+    from services.reference_service import update_existing_reference
+    return await update_existing_reference(reference_id, reference_data)
+
+
+@app.delete("/api/v1/references/{reference_id}")
+async def delete_reference(reference_id: str):
+    """Delete reference"""
+    from services.reference_service import delete_reference_by_id
+    return await delete_reference_by_id(reference_id)
+
+
 # ============= SYNTHESIS ENDPOINTS (Core Functionality) =============
 
 @app.post("/api/v1/synthesis/generate")
