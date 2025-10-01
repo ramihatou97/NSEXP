@@ -14,10 +14,27 @@ import json
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-# AI Provider SDKs
-import openai
-import anthropic
-import google.generativeai as genai
+# AI Provider SDKs - Optional dependencies (gracefully degrade if not available)
+try:
+    import openai
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+    openai = None
+
+try:
+    import anthropic
+    ANTHROPIC_AVAILABLE = True
+except ImportError:
+    ANTHROPIC_AVAILABLE = False
+    anthropic = None
+
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+    genai = None
 
 from config.settings_simplified import settings
 
@@ -91,29 +108,35 @@ class AIServiceManager:
         """Initialize AI provider clients"""
 
         # Initialize OpenAI
-        if settings.OPENAI_API_KEY:
+        if OPENAI_AVAILABLE and settings.OPENAI_API_KEY:
             openai.api_key = settings.OPENAI_API_KEY
             self.providers[AIProvider.OPENAI] = OpenAIService(settings.OPENAI_API_KEY)
             logger.info("OpenAI service initialized")
+        elif not OPENAI_AVAILABLE and settings.OPENAI_API_KEY:
+            logger.warning("OpenAI API key provided but 'openai' library not installed")
 
         # Initialize Anthropic
-        if settings.ANTHROPIC_API_KEY:
+        if ANTHROPIC_AVAILABLE and settings.ANTHROPIC_API_KEY:
             self.providers[AIProvider.ANTHROPIC] = AnthropicService(settings.ANTHROPIC_API_KEY)
             logger.info("Anthropic service initialized")
+        elif not ANTHROPIC_AVAILABLE and settings.ANTHROPIC_API_KEY:
+            logger.warning("Anthropic API key provided but 'anthropic' library not installed")
 
         # Initialize Google Gemini
-        if settings.GOOGLE_API_KEY:
+        if GEMINI_AVAILABLE and settings.GOOGLE_API_KEY:
             genai.configure(api_key=settings.GOOGLE_API_KEY)
             self.providers[AIProvider.GOOGLE] = GeminiService(settings.GOOGLE_API_KEY)
             logger.info("Google Gemini service initialized")
+        elif not GEMINI_AVAILABLE and settings.GOOGLE_API_KEY:
+            logger.warning("Google API key provided but 'google-generativeai' library not installed")
 
-        # Initialize Perplexity
+        # Initialize Perplexity (only needs httpx, no special library)
         if settings.PERPLEXITY_API_KEY:
             self.providers[AIProvider.PERPLEXITY] = PerplexityService(settings.PERPLEXITY_API_KEY)
             logger.info("Perplexity service initialized")
 
         if not self.providers:
-            logger.warning("No AI providers configured!")
+            logger.warning("No AI providers configured - app will run in mock mode")
 
     async def generate_neurosurgical_content(
         self,
