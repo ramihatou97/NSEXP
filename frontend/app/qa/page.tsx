@@ -26,7 +26,7 @@ export default function QAPage() {
     setAnswer('')
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/qa/ask', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/qa/ask`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question }),
@@ -40,7 +40,7 @@ export default function QAPage() {
         setError(data.error || 'Failed to get answer')
       }
     } catch (err) {
-      setError('Failed to connect to backend. Make sure the backend is running on http://localhost:8000')
+      setError(`Failed to connect to backend at ${process.env.NEXT_PUBLIC_API_URL}`)
     } finally {
       setLoading(false)
     }
