@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Neurosurgical Knowledge System - Personal Edition",
     description="AI-powered neurosurgical knowledge synthesis and management for personal use",
-    version="2.0.0-simplified",
+    version="2.1.0-optimized",
     lifespan=lifespan,
 )
 
@@ -87,7 +87,7 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "version": "2.0.0-simplified"
+        "version": "2.1.0-optimized"
     }
 
 
