@@ -8,8 +8,10 @@ from typing import Callable
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from utils.logger import get_logger, log_with_context
+from utils.metrics import get_metrics
 
 logger = get_logger(__name__)
+metrics = get_metrics()
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
@@ -71,6 +73,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                 status_code=response.status_code,
                 duration_ms=round(duration_ms, 2),
             )
+
+            # Record performance metrics
+            metrics.record_api_call(request.url.path, duration_ms)
 
             # Add request ID to response headers
             response.headers["X-Request-ID"] = request_id

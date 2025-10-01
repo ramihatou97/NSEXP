@@ -91,6 +91,21 @@ async def health_check():
     }
 
 
+# Performance metrics endpoint
+@app.get("/metrics")
+async def get_performance_metrics():
+    """Get application performance metrics"""
+    from utils.metrics import get_metrics
+
+    metrics = get_metrics()
+    return {
+        "summary": metrics.get_summary(),
+        "api_endpoints": metrics.get_api_stats(),
+        "ai_services": metrics.get_ai_stats(),
+        "slow_endpoints": metrics.get_slow_endpoints(threshold_ms=500)
+    }
+
+
 # ============= CHAPTER ENDPOINTS (Core Functionality) =============
 
 @app.get("/api/v1/chapters")
