@@ -183,3 +183,28 @@ Provide a comprehensive, evidence-based answer including:
             context_parts.append(ref_text)
 
         return "\n\n".join(context_parts)
+
+
+# Simplified function exports for main_simplified.py
+async def process_question(question: str, chapter_id: str = None, context: str = None) -> Dict[str, Any]:
+    """
+    Process a question and return answer
+    Simplified wrapper function for easy use
+    """
+    try:
+        qa_service = QAService()
+        result = await qa_service.answer_question(
+            question=question,
+            context=context
+        )
+        
+        return {
+            "success": True,
+            "data": result
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "data": None
+        }

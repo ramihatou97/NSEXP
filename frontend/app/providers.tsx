@@ -4,12 +4,8 @@ import { ReactNode } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { SnackbarProvider } from 'notistack'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { ErrorBoundary } from 'react-error-boundary'
-import { Toaster } from 'react-hot-toast'
 
 // Create neurosurgery-themed MUI theme
 const theme = createTheme({
@@ -156,50 +152,22 @@ export function Providers({ children }: ProvidersProps) {
       FallbackComponent={ErrorFallback}
       onError={(error) => {
         console.error('Error caught by boundary:', error)
-        // Send to error tracking service
       }}
     >
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <SnackbarProvider
-              maxSnack={3}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              autoHideDuration={5000}
-            >
-              {children}
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: '#363636',
-                    color: '#fff',
-                  },
-                  success: {
-                    duration: 3000,
-                    iconTheme: {
-                      primary: '#4caf50',
-                      secondary: '#fff',
-                    },
-                  },
-                  error: {
-                    duration: 4000,
-                    iconTheme: {
-                      primary: '#f44336',
-                      secondary: '#fff',
-                    },
-                  },
-                }}
-              />
-            </SnackbarProvider>
-          </LocalizationProvider>
+          <SnackbarProvider
+            maxSnack={3}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            autoHideDuration={5000}
+          >
+            {children}
+          </SnackbarProvider>
         </ThemeProvider>
-        {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
       </QueryClientProvider>
     </ErrorBoundary>
   )

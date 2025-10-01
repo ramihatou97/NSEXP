@@ -26,9 +26,14 @@ async def lifespan(app: FastAPI):
     """Simplified application lifecycle"""
     logger.info("Starting Neurosurgical Knowledge System...")
 
-    # Create database tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Try to create database tables (skip if database unavailable)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables initialized")
+    except Exception as e:
+        logger.warning(f"Database connection failed (will use mock data): {e}")
+        # System can still run with mock responses
 
     # Initialize AI services
     await initialize_ai_services()
@@ -38,7 +43,10 @@ async def lifespan(app: FastAPI):
     yield
 
     # Cleanup
-    await engine.dispose()
+    try:
+        await engine.dispose()
+    except:
+        pass
     logger.info("System shutdown complete")
 
 
@@ -109,6 +117,46 @@ async def delete_chapter(chapter_id: str):
     """Delete chapter"""
     from services.chapter_service import delete_chapter_by_id
     return await delete_chapter_by_id(chapter_id)
+
+
+# ============= REFERENCE ENDPOINTS (Core Functionality) =============
+
+@app.get("/api/v1/references")
+async def get_references(
+    chapter_id: str = None,
+    limit: int = 100
+):
+    """Get all references"""
+    from services.reference_service import get_all_references
+    return await get_all_references(chapter_id, limit)
+
+
+@app.post("/api/v1/references")
+async def create_reference(reference_data: dict):
+    """Create new reference"""
+    from services.reference_service import create_new_reference
+    return await create_new_reference(reference_data)
+
+
+@app.get("/api/v1/references/{reference_id}")
+async def get_reference(reference_id: str):
+    """Get specific reference"""
+    from services.reference_service import get_reference_by_id
+    return await get_reference_by_id(reference_id)
+
+
+@app.put("/api/v1/references/{reference_id}")
+async def update_reference(reference_id: str, reference_data: dict):
+    """Update reference"""
+    from services.reference_service import update_existing_reference
+    return await update_existing_reference(reference_id, reference_data)
+
+
+@app.delete("/api/v1/references/{reference_id}")
+async def delete_reference(reference_id: str):
+    """Delete reference"""
+    from services.reference_service import delete_reference_by_id
+    return await delete_reference_by_id(reference_id)
 
 
 # ============= SYNTHESIS ENDPOINTS (Core Functionality) =============
