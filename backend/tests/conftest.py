@@ -20,6 +20,17 @@ def event_loop() -> Generator:
     loop.close()
 
 
+@pytest.fixture
+async def async_client():
+    """Create async HTTP client for API tests"""
+    from httpx import AsyncClient, ASGITransport
+    from main_simplified import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        yield client
+
+
 @pytest.fixture(scope="session")
 async def test_engine():
     """Create test database engine (in-memory SQLite)"""
