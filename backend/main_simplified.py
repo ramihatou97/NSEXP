@@ -16,9 +16,15 @@ from config.settings_simplified import settings
 from core.database_simplified import engine, Base
 from services.ai_manager import ai_manager, initialize_ai_services
 from utils.logger import setup_logging
+from middleware.logging_middleware import LoggingMiddleware
 
-# Setup logging
-logger = setup_logging()
+# Setup logging with JSON format and file rotation
+logger = setup_logging(
+    log_level="INFO",
+    log_file="logs/app.log",
+    json_logs=True,
+    rotate_logs=True
+)
 
 
 @asynccontextmanager
@@ -57,6 +63,9 @@ app = FastAPI(
     version="2.0.0-simplified",
     lifespan=lifespan,
 )
+
+# Add logging middleware (logs all requests/responses)
+app.add_middleware(LoggingMiddleware)
 
 # Simple CORS for local development
 app.add_middleware(
