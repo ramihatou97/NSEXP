@@ -17,6 +17,7 @@ from core.database_simplified import engine, Base
 from services.ai_manager import ai_manager, initialize_ai_services
 from utils.logger import setup_logging
 from middleware.logging_middleware import LoggingMiddleware
+from middleware.version_middleware import VersionMiddleware
 
 # Setup logging with JSON format and file rotation
 logger = setup_logging(
@@ -63,6 +64,9 @@ app = FastAPI(
     version="2.0.0-simplified",
     lifespan=lifespan,
 )
+
+# Add version validation middleware (validates API version)
+app.add_middleware(VersionMiddleware)
 
 # Add logging middleware (logs all requests/responses)
 app.add_middleware(LoggingMiddleware)
