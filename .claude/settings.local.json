@@ -6,7 +6,12 @@
       "Bash(docker tag:*)",
       "Bash(docker push:*)",
       "Bash(docker build:*)",
-      "Bash(docker system prune:*)"
+      "Bash(docker system prune:*)",
+      "Bash(docker-compose:*)",
+      "Bash(grep:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

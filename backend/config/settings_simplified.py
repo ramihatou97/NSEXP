@@ -33,6 +33,12 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: Optional[str] = None
     PERPLEXITY_API_KEY: Optional[str] = None
 
+    # AI Model Configurations
+    OPENAI_MODEL: str = "gpt-4-turbo-preview"
+    ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
+    GEMINI_MODEL: str = "gemini-1.5-pro"
+    PERPLEXITY_MODEL: str = "llama-3.1-sonar-small-128k-online"
+
     # Medical APIs
     PUBMED_API_KEY: Optional[str] = None
 
@@ -72,6 +78,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"  # Ignore frontend/other service variables
 
     @property
     def database_url_async(self) -> str:

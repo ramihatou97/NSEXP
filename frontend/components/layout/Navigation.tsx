@@ -26,8 +26,17 @@ export function Navigation() {
           <Button color="inherit" component={Link} href="/search">
             Search
           </Button>
+          <Button color="inherit" component={Link} href="/references">
+            References
+          </Button>
+          <Button color="inherit" component={Link} href="/procedures">
+            Procedures
+          </Button>
           <Button color="inherit" component={Link} href="/qa">
             Q&A
+          </Button>
+          <Button color="inherit" component={Link} href="/settings">
+            Settings
           </Button>
         </Box>
         
