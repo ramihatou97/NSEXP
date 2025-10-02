@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import { AppBar, Toolbar, Typography, Button, Box, IconButton } from '@mui/material'
-import { Brain, Menu } from '@mui/icons-material'
+import { Psychology, Menu } from '@mui/icons-material'
 
 export function Navigation() {
   return (
     <AppBar position="sticky" sx={{ bgcolor: 'primary.main' }}>
       <Toolbar>
-        <Brain sx={{ mr: 2 }} />
+        <Psychology sx={{ mr: 2 }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           NeuroKnowledge
         </Typography>

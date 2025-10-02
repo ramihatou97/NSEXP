@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "mcp__filesystem__directory_tree",
-      "mcp__filesystem__read_multiple_files"
+      "mcp__filesystem__read_multiple_files",
+      "Bash(docker tag:*)",
+      "Bash(docker push:*)",
+      "Bash(docker build:*)",
+      "Bash(docker system prune:*)"
     ],
     "deny": [],
     "ask": []
