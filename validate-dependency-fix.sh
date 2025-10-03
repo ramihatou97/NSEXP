@@ -19,7 +19,11 @@ NC='\033[0m' # No Color
 cd "$(dirname "$0")/frontend" || exit 1
 
 echo "1. Checking @cypress/react version in package.json..."
-CYPRESS_VERSION=$(grep -A 0 '"@cypress/react"' package.json | sed -n 's/.*"\^*\([0-9.]*\)".*/\1/p')
+if ! command -v jq >/dev/null 2>&1; then
+    echo -e "${RED}jq is required but not installed. Please install jq to continue.${NC}"
+    exit 1
+fi
+CYPRESS_VERSION=$(jq -r '.dependencies["@cypress/react"] // .devDependencies["@cypress/react"] // empty' package.json | sed 's/^[^0-9]*//')
 echo -e "   Found: ${GREEN}@cypress/react@${CYPRESS_VERSION}${NC}"
 
 if [[ "$CYPRESS_VERSION" == "9.0.1" ]]; then
