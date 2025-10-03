@@ -4,9 +4,11 @@
 
 - **Backend (Production)**: `backend/Dockerfile` ✅ WORKS
 - **Backend (Simplified)**: `backend/Dockerfile.simple` ✅ WORKS  
+- **Backend (Full ML)**: `backend/Dockerfile.full` ✅ NEW - For ML workloads
 - **Frontend (Production)**: `frontend/Dockerfile` ✅ WORKS
 - **Frontend (Simplified)**: `frontend/Dockerfile.simple` ✅ WORKS
-- **Docker Compose**: `docker-compose-simple.yml` ✅ READY
+- **Docker Compose (Simple)**: `docker-compose-simple.yml` ✅ READY
+- **Docker Compose (Full ML)**: `docker-compose-full.yml` ✅ NEW - With ML stack
 
 ## 🔧 Issues Fixed
 
@@ -92,8 +94,27 @@ docker build -f Dockerfile -t nsexp-frontend:latest .
 # Using simplified Dockerfiles (fastest, recommended for development)
 docker-compose -f docker-compose-simple.yml up --build
 
+# Using FULL ML stack (PyTorch, transformers, medical NLP - NEW!)
+docker-compose -f docker-compose-full.yml up --build
+
 # Stop everything
 docker-compose -f docker-compose-simple.yml down
+# or
+docker-compose -f docker-compose-full.yml down
+```
+
+### NEW: Full ML Backend Build
+```bash
+cd backend
+docker build -f Dockerfile.full -t nsexp-backend:full .
+
+# This includes:
+# - PyTorch 2.1.1
+# - Transformers (Hugging Face)
+# - Medical NLP (scispacy, medcat)
+# - Advanced ML models
+# Build time: 15-20 minutes
+# Image size: ~2.5-3GB
 ```
 
 ## 📦 Image Sizes
@@ -102,8 +123,38 @@ docker-compose -f docker-compose-simple.yml down
 |-------|------|----------|
 | `nsexp-backend:simple` | ~1.5GB | Development, Testing |
 | `nsexp-backend:latest` | ~850MB | Production (multi-stage) |
+| `nsexp-backend:full` | ~2.5-3GB | **NEW: Full ML stack** |
 | `nsexp-frontend:simple` | ~500MB | Development |
 | `nsexp-frontend:latest` | ~250MB | Production (optimized) |
+
+## 🆕 NEW: Full ML Build Option
+
+For users who need the complete ML stack with PyTorch, transformers, and medical NLP:
+
+**Quick Start:**
+```bash
+# Test full ML build
+./quick-docker-test-full.sh
+
+# Or deploy full ML stack
+docker compose -f docker-compose-full.yml up --build
+```
+
+**What's Included:**
+- ✅ PyTorch 2.1.1
+- ✅ Transformers (Hugging Face)
+- ✅ Medical NLP (scispacy, medcat)
+- ✅ Advanced sentence transformers
+- ✅ Elasticsearch for search
+- ✅ Qdrant vector database
+- ✅ Complete research ML stack
+
+**Requirements:**
+- 8GB+ RAM
+- 10GB disk space
+- 15-20 minute build time
+
+**See `DOCKER_BUILD_OPTIONS.md` for detailed comparison and usage guide.**
 
 ## 🔍 Verification Steps
 

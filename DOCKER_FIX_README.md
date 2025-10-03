@@ -65,12 +65,19 @@ docker build -f Dockerfile.simple -t nsexp-backend:simple .
 # Production (multi-stage optimized)
 cd backend
 docker build -f Dockerfile -t nsexp-backend:latest .
+
+# Full ML Stack (with PyTorch, transformers, medical NLP)
+cd backend
+docker build -f Dockerfile.full -t nsexp-backend:full .
 ```
 
 ### Full Stack
 ```bash
-# All services (Postgres, Redis, Backend, Frontend)
+# Simplified stack (Postgres, Redis, Backend, Frontend)
 docker compose -f docker-compose-simple.yml up --build
+
+# Full ML stack (adds Elasticsearch, Qdrant, ML dependencies)
+docker compose -f docker-compose-full.yml up --build
 ```
 
 ## 🌐 Access Services
