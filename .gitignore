@@ -75,7 +75,8 @@ logs/
 *.sqlite3
 
 # Docker
-.dockerignore
+# .dockerignore files are needed for builds, so don't ignore them
+# .dockerignore
 
 # OS
 .DS_Store
