@@ -29,9 +29,9 @@ const nextConfig = {
     NEXT_PUBLIC_APP_VERSION: '2.0.0',
   },
 
-  // Webpack configuration for medical imaging libraries
+  // Webpack configuration
   webpack: (config, { isServer }) => {
-    // Handle DICOM and medical imaging libraries
+    // Handle file system fallbacks for browser
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -39,25 +39,13 @@ const nextConfig = {
       crypto: false,
     }
 
-    // Add rules for medical file formats
-    config.module.rules.push({
-      test: /\.(dcm|nii|nii\.gz)$/,
-      use: 'file-loader',
-    })
-
-    // Optimize for large medical datasets
+    // Optimize for production
     if (!isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
           default: false,
           vendors: false,
-          medical: {
-            name: 'medical',
-            test: /[\\/]node_modules[\\/](cornerstone|dicom|three)/,
-            priority: 30,
-            reuseExistingChunk: true,
-          },
           visualization: {
             name: 'visualization',
             test: /[\\/]node_modules[\\/](d3|recharts|react-force-graph)/,
@@ -66,7 +54,13 @@ const nextConfig = {
           },
           ui: {
             name: 'ui',
-            test: /[\\/]node_modules[\\/](@mui|@emotion|framer-motion)/,
+            test: /[\\/]node_modules[\\/](@mui|@emotion|framer-motion|@radix-ui)/,
+            priority: 15,
+            reuseExistingChunk: true,
+          },
+          editor: {
+            name: 'editor',
+            test: /[\\/]node_modules[\\/](@tiptap|lowlight)/,
             priority: 10,
             reuseExistingChunk: true,
           },

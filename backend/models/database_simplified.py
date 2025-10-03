@@ -214,6 +214,10 @@ class Chapter(Base):
 
     __table_args__ = (
         Index('idx_chapter_specialty', 'specialty'),
+        Index('idx_chapter_status', 'status'),
+        Index('idx_chapter_created_at', 'created_at'),
+        Index('idx_chapter_updated_at', 'updated_at'),
+        Index('idx_chapter_evidence_level', 'evidence_level'),
         Index('idx_chapter_search', 'search_vector', postgresql_using='gin'),
     )
 

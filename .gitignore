@@ -10,6 +10,7 @@ dist/
 downloads/
 eggs/
 .eggs/
+!frontend/lib/
 lib/
 lib64/
 parts/
@@ -45,6 +46,9 @@ env/
 htmlcov/
 .tox/
 .hypothesis/
+coverage.xml
+.nyc_output/
+coverage/
 
 # Environment
 .env
@@ -86,3 +90,4 @@ Thumbs.db
 *.bak
 *.tmp
 *.backup
+*.tsbuildinfo

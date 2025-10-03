@@ -6,14 +6,51 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![Version](https://img.shields.io/badge/version-2.2.0--enhanced-brightgreen.svg)](https://github.com/ramihatou97/NSEXP)
-[![API Endpoints](https://img.shields.io/badge/API%20endpoints-54-success.svg)](backend/docs/ENHANCED_API_DOCUMENTATION.md)
+[![Version](https://img.shields.io/badge/version-2.1.0--production--ready-brightgreen.svg)](https://github.com/ramihatou97/NSEXP)
+[![Tests](https://img.shields.io/badge/tests-passing-success.svg)](https://github.com/ramihatou97/NSEXP/actions)
+[![Coverage](https://img.shields.io/badge/coverage-monitored-blue.svg)](https://codecov.io)
+[![Security](https://img.shields.io/badge/security-hardened-green.svg)](PRODUCTION_DEPLOYMENT.md#security-configuration)
 
-## 🎉 **v2.2.0 Enhancement Highlights** (NEW!)
+## 🎉 **v2.1.0 Production Enhancements** (LATEST!)
 
-This release includes **major enhancements** for comprehensive neurosurgical knowledge synthesis:
+This release brings **production-grade reliability, security, and performance** to NSEXP:
 
-### 🚀 New Features
+### 🧪 Testing & Quality Assurance
+- ✅ **Comprehensive Test Suite** - Unit, integration, and e2e tests organized by type
+- ✅ **Frontend Testing** - Jest + React Testing Library configured
+- ✅ **Code Coverage** - Automated tracking with Codecov integration
+- ✅ **Pre-commit Hooks** - Black, isort, flake8, prettier, safety checks
+
+### 🔄 CI/CD Pipeline
+- ✅ **Automated Testing** - Backend (Python 3.11/3.12) and frontend (Node 18/20)
+- ✅ **Docker Builds** - Automated container builds with caching
+- ✅ **Security Scanning** - Trivy vulnerability scanning on every push
+- ✅ **Integration Tests** - Full stack testing with PostgreSQL & Redis
+
+### 🔒 Security Enhancements
+- ✅ **Security Headers** - X-Frame-Options, CSP, HSTS, X-XSS-Protection
+- ✅ **Rate Limiting** - 60 requests/minute per IP (configurable)
+- ✅ **Input Sanitization** - Automatic detection of suspicious patterns
+- ✅ **Exception Handling** - Standardized error responses with logging
+
+### 📊 Performance & Monitoring
+- ✅ **Metrics Collection** - Response times, request counts, error rates
+- ✅ **Health Endpoints** - `/health` and `/metrics` for monitoring
+- ✅ **Performance Headers** - X-Response-Time on all responses
+- ✅ **Database Optimization** - New indexes for improved query performance
+
+### 📦 Dependency Updates
+- ✅ **Backend**: uvicorn 0.25.0, openai 1.6.0, anthropic 0.8.0, httpx 0.26.0
+- ✅ **Frontend**: Next.js 14.1.0, React 18.3.1, axios 1.6.5
+- ✅ **Bundle Optimization**: Removed unused packages (~80MB savings)
+
+**📖 See [PRODUCTION_DEPLOYMENT.md](PRODUCTION_DEPLOYMENT.md) for deployment guide**
+
+---
+
+## 🎯 Previous Release Highlights (v2.2.0)
+
+### 🚀 Advanced Features
 - ✅ **Advanced Image Extraction** - Extract and analyze medical images from PDFs with OCR
 - ✅ **Comprehensive Synthesis** - Generate chapters with 150+ section structure
 - ✅ **Deep Literature Search** - PubMed, arXiv integration with automatic enrichment
