@@ -45,6 +45,9 @@ env/
 htmlcov/
 .tox/
 .hypothesis/
+coverage.xml
+.nyc_output/
+coverage/
 
 # Environment
 .env

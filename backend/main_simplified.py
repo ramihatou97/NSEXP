@@ -3,7 +3,7 @@ Simplified FastAPI Application for Single-User Neurosurgical Knowledge System
 All functionality retained, authentication and multi-user complexity removed
 """
 
-from fastapi import FastAPI, BackgroundTasks, WebSocket
+from fastapi import FastAPI, BackgroundTasks, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
@@ -14,10 +14,20 @@ import json
 # Import simplified configuration
 from config.settings_simplified import settings
 from core.database_simplified import engine, Base
+from core.exceptions import NSEXPException
 from services.ai_manager import ai_manager, initialize_ai_services
 from utils.logger import setup_logging
 from middleware.logging_middleware import LoggingMiddleware
 from middleware.version_middleware import VersionMiddleware
+from middleware.security_middleware import (
+    SecurityHeadersMiddleware,
+    RateLimitMiddleware,
+    InputSanitizationMiddleware
+)
+from middleware.metrics_middleware import (
+    PerformanceMiddleware,
+    HealthCheckMiddleware
+)
 
 # Setup logging with JSON format and file rotation
 logger = setup_logging(
@@ -61,9 +71,21 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Neurosurgical Knowledge System - Personal Edition",
     description="AI-powered neurosurgical knowledge synthesis and management for personal use",
-    version="2.1.0-optimized",
+    version="2.1.0-production-ready",
     lifespan=lifespan,
 )
+
+# Add middleware in order (innermost to outermost)
+# Health check middleware (intercepts /health and /metrics)
+app.add_middleware(HealthCheckMiddleware)
+
+# Performance tracking middleware
+app.add_middleware(PerformanceMiddleware)
+
+# Security middlewares
+app.add_middleware(InputSanitizationMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware, requests_per_minute=60)
 
 # Add version validation middleware (validates API version)
 app.add_middleware(VersionMiddleware)
@@ -81,13 +103,51 @@ app.add_middleware(
 )
 
 
+# Exception handlers
+@app.exception_handler(NSEXPException)
+async def nsexp_exception_handler(request: Request, exc: NSEXPException):
+    """Handle custom NSEXP exceptions"""
+    logger.error(
+        f"NSEXP Exception: {exc.message}",
+        extra={
+            "code": exc.code,
+            "details": exc.details,
+            "path": request.url.path
+        }
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=exc.to_dict()
+    )
+
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """Handle unexpected exceptions"""
+    logger.error(
+        f"Unexpected error: {str(exc)}",
+        extra={"path": request.url.path},
+        exc_info=True
+    )
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": {
+                "message": "Internal server error",
+                "code": "INTERNAL_SERVER_ERROR",
+                "details": {}
+            }
+        }
+    )
+
+
 # Health check
 @app.get("/health")
 async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "version": "2.1.0-optimized"
+        "version": "2.1.0-production-ready"
     }
 
 
