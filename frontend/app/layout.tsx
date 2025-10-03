@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { Providers } from './providers'
 import { Navigation } from '@/components/layout/Navigation'
 import { Footer } from '@/components/layout/Footer'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+// Use system fonts instead of Google Fonts to avoid network issues during build
+// If Google Fonts are needed, they can be loaded via CSS or at runtime
+const fontClassName = 'font-sans'
 
 export const metadata: Metadata = {
   title: 'Neurosurgical Knowledge Management System',
@@ -35,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={fontClassName}>
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Navigation />

@@ -218,7 +218,7 @@ export default function DeepSearchPage() {
                     color="primary"
                   />
                   <Chip
-                    label={`${result.sources_searched.length} sources`}
+                    label={`${result.sources_searched?.length || 0} sources`}
                   />
                 </Stack>
                 <Typography variant="caption" color="text.secondary">
@@ -244,7 +244,7 @@ export default function DeepSearchPage() {
                             variant="outlined"
                           />
                         )}
-                        {paper.relevance_score > 0 && (
+                        {paper.relevance_score && paper.relevance_score > 0 && (
                           <Chip
                             label={`Score: ${paper.relevance_score.toFixed(1)}`}
                             size="small"

@@ -156,14 +156,14 @@ export default function ProceduresPage() {
           )}
 
           <Grid container spacing={3}>
-            {procedures.map((proc) => (
+            {procedures.map((proc: any) => (
               <Grid item xs={12} md={6} lg={4} key={proc.id}>
                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                       <Chip
                         label={proc.complexity}
-                        color={complexityColors[proc.complexity]}
+                        color={complexityColors[proc.complexity as keyof typeof complexityColors] as any}
                         size="small"
                       />
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -233,7 +233,7 @@ export default function ProceduresPage() {
                   <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
                     <Chip
                       label={procedure.complexity}
-                      color={complexityColors[procedure.complexity]}
+                      color={complexityColors[procedure.complexity as keyof typeof complexityColors] as any}
                       size="small"
                     />
                     <Chip
@@ -258,7 +258,7 @@ export default function ProceduresPage() {
                 Indications
               </Typography>
               <List dense>
-                {procedure.indications.map((indication, index) => (
+                {procedure.indications.map((indication: any, index: number) => (
                   <ListItem key={index}>
                     <ListItemText primary={`• ${indication}`} />
                   </ListItem>
@@ -271,7 +271,7 @@ export default function ProceduresPage() {
                 Contraindications
               </Typography>
               <List dense>
-                {procedure.contraindications.map((contraindication, index) => (
+                {procedure.contraindications.map((contraindication: any, index: number) => (
                   <ListItem key={index}>
                     <ListItemText primary={`• ${contraindication}`} />
                   </ListItem>
@@ -283,7 +283,7 @@ export default function ProceduresPage() {
                 Procedure Steps
               </Typography>
               <Stepper orientation="vertical">
-                {procedure.steps.map((step, index) => (
+                {procedure.steps.map((step: any, index: number) => (
                   <Step key={index} active={true} completed={false}>
                     <StepLabel>
                       <Typography variant="subtitle1" fontWeight="medium">
@@ -300,7 +300,7 @@ export default function ProceduresPage() {
                             Critical Points:
                           </Typography>
                           <List dense>
-                            {step.critical_points.map((point, i) => (
+                            {step.critical_points.map((point: any, i: number) => (
                               <ListItem key={i}>
                                 <ListItemText
                                   primary={`• ${point}`}
@@ -329,7 +329,7 @@ export default function ProceduresPage() {
                     Potential Complications
                   </Typography>
                   <List dense>
-                    {procedure.complications.map((complication, index) => (
+                    {procedure.complications.map((complication: any, index: number) => (
                       <ListItem key={index}>
                         <ListItemText primary={`• ${complication}`} />
                       </ListItem>

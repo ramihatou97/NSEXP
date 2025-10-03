@@ -10,6 +10,10 @@ export interface DeepSearchRequest {
   sources?: string[]
   max_results?: number
   maxResults?: number
+  filters?: {
+    year_min?: number
+    year_max?: number
+  }
 }
 
 export interface SearchResult {
@@ -44,6 +48,9 @@ export interface ExtractedImage {
   type?: string
   width?: number
   height?: number
+  format?: string
+  size_bytes?: number
+  extracted_text?: string
 }
 
 export interface ImageExtractionResponse {
@@ -200,3 +207,39 @@ export async function performOCR(imageId: string) {
     confidence: 0,
   }
 }
+
+/**
+ * Synthesize comprehensive chapter with advanced features
+ */
+export async function synthesizeComprehensiveChapter(data: {
+  topic: string
+  specialty: string
+  max_sources?: number
+  include_images?: boolean
+  depth?: 'basic' | 'intermediate' | 'comprehensive'
+}) {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/synthesis/comprehensive`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Synthesis failed: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Comprehensive synthesis error:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Synthesis failed',
+    }
+  }
+}
+

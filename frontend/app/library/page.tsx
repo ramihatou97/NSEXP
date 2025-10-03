@@ -188,7 +188,7 @@ export default function LibraryPage() {
       {/* Chapters Grid */}
       {!isLoading && !error && chapters && chapters.length > 0 && (
         <Grid container spacing={3}>
-          {chapters.map((chapter) => (
+          {chapters.map((chapter: any) => (
             <Grid item xs={12} md={6} lg={4} key={chapter.id}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>
@@ -213,7 +213,7 @@ export default function LibraryPage() {
 
                   {chapter.metadata?.tags && chapter.metadata.tags.length > 0 && (
                     <Box sx={{ mt: 1, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                      {chapter.metadata.tags.slice(0, 3).map((tag) => (
+                      {chapter.metadata.tags.slice(0, 3).map((tag: string) => (
                         <Chip key={tag} label={tag} size="small" variant="outlined" />
                       ))}
                     </Box>

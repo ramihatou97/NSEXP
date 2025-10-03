@@ -164,7 +164,7 @@ export default function ImageToolsPage() {
                           </Typography>
                           <Stack spacing={1}>
                             <Chip
-                              label={image.type.replace(/_/g, ' ')}
+                              label={image.type?.replace(/_/g, ' ') || 'Unknown'}
                               size="small"
                               color="primary"
                               variant="outlined"
@@ -173,10 +173,10 @@ export default function ImageToolsPage() {
                               {image.width} x {image.height} px
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              Format: {image.format.toUpperCase()}
+                              Format: {image.format?.toUpperCase() || 'Unknown'}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              Size: {(image.size_bytes / 1024).toFixed(1)} KB
+                              Size: {((image.size_bytes || 0) / 1024).toFixed(1)} KB
                             </Typography>
                             {image.extracted_text && (
                               <Box sx={{ mt: 1 }}>
