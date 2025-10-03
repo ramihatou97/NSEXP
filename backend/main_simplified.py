@@ -233,10 +233,32 @@ async def search_content(
 
 
 @app.post("/api/v1/search/semantic")
-async def semantic_search(query: str, limit: int = 10):
-    """Semantic search using embeddings"""
+async def semantic_search(query: str, limit: int = 10, threshold: float = 0.7):
+    """Semantic search using FAISS vector similarity"""
     from services.search_service import semantic_search_content
-    return await semantic_search_content(query, limit)
+    return await semantic_search_content(query, limit, threshold)
+
+
+@app.post("/api/v1/search/index")
+async def index_content_for_search(background_tasks: BackgroundTasks):
+    """Index all content for vector search"""
+    from services.search_service import index_content_for_vector_search
+    
+    # Run indexing in background
+    background_tasks.add_task(index_content_for_vector_search)
+    
+    return {
+        "success": True,
+        "message": "Content indexing started in background",
+        "data": {"job_status": "started"}
+    }
+
+
+@app.get("/api/v1/search/stats")
+async def get_search_stats():
+    """Get vector search index statistics"""
+    from services.search_service import get_vector_search_stats
+    return await get_vector_search_stats()
 
 
 # ============= Q&A ENDPOINTS (Core Functionality) =============
