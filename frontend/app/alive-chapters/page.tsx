@@ -46,7 +46,7 @@ export default function AliveChaptersPage() {
 
   const loadStatus = async () => {
     try {
-      const response = await getAliveChapterStatus()
+      const response = await getAliveChapterStatus(chapterId)
       setStatus(response)
     } catch (err) {
       console.error('Failed to load status:', err)

@@ -25,7 +25,7 @@ import {
   Science,
   Description,
   OpenInNew,
-} from '@mui/material-icons'
+} from '@mui/icons-material'
 import {
   deepLiteratureSearch,
   DeepSearchRequest,
