@@ -6,8 +6,32 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![Version](https://img.shields.io/badge/version-2.1.0--optimized-brightgreen.svg)](https://github.com/ramihatou97/NNP)
-[![Tests](https://img.shields.io/badge/tests-67%20passing-success.svg)](backend/tests/)
+[![Version](https://img.shields.io/badge/version-2.2.0--enhanced-brightgreen.svg)](https://github.com/ramihatou97/NSEXP)
+[![API Endpoints](https://img.shields.io/badge/API%20endpoints-54-success.svg)](backend/docs/ENHANCED_API_DOCUMENTATION.md)
+
+## 🎉 **v2.2.0 Enhancement Highlights** (NEW!)
+
+This release includes **major enhancements** for comprehensive neurosurgical knowledge synthesis:
+
+### 🚀 New Features
+- ✅ **Advanced Image Extraction** - Extract and analyze medical images from PDFs with OCR
+- ✅ **Comprehensive Synthesis** - Generate chapters with 150+ section structure
+- ✅ **Deep Literature Search** - PubMed, arXiv integration with automatic enrichment
+- ✅ **Multi-Level Summaries** - Executive, detailed, technical, bullet points
+- ✅ **Alive Chapter Integration** - Q&A, citations, behavioral learning
+- ✅ **Enhanced PDF Processing** - PyMuPDF with tables, images, metadata
+
+### 📊 System Improvements
+- ✅ **54 API endpoints** (16 new endpoints added)
+- ✅ **Advanced OCR** with Tesseract and EasyOCR
+- ✅ **Image classification** for medical illustrations
+- ✅ **Automatic citation generation** with evidence levels
+- ✅ **Quality metrics** for generated content
+- ✅ **Chapter health monitoring** with real-time insights
+
+**See [ENHANCEMENT_SUMMARY.md](ENHANCEMENT_SUMMARY.md) for complete details**
+
+---
 
 ## 🚀 Quick Start
 
@@ -15,15 +39,11 @@
 
 ```bash
 # Clone and start
-git clone https://github.com/ramihatou97/NNP.git
-cd NNP
+git clone https://github.com/ramihatou97/NSEXP.git
+cd NSEXP
 
 # Using Docker (easiest)
-docker compose -f docker-compose-simple.yml up -d
-
-# Or use startup scripts
-./start.sh  # Linux/Mac
-start.bat   # Windows
+docker-compose -f docker-compose-simple.yml up -d
 
 # Access at:
 # Frontend:  http://localhost:3000
@@ -31,27 +51,10 @@ start.bat   # Windows
 # API Docs:  http://localhost:8000/api/docs
 ```
 
-**📚 New to the system?** See [QUICKSTART.md](QUICKSTART.md) for detailed setup instructions.
-
-**🚢 Deploying to production?** See [DEPLOYMENT.md](DEPLOYMENT.md) for cloud deployment options.
-
----
-
-## 🎉 **v2.1.0 Optimization Highlights** (NEW!)
-
-This release includes significant optimizations for single-user deployment:
-
-- ✅ **67 comprehensive tests** with pytest infrastructure
-- ✅ **Structured JSON logging** with rotation and request tracking
-- ✅ **Performance monitoring** via `/metrics` endpoint
-- ✅ **In-memory caching** for 50x faster repeated queries
-- ✅ **API versioning** with validation middleware
-- ✅ **Code organization** - 277KB of legacy code archived
-- ✅ **Database optimization guide** with index recommendations
-
-**See [OPTIMIZATION_CHANGELOG.md](OPTIMIZATION_CHANGELOG.md) for full details**
-
-**Performance:** 20,000x faster cached AI queries, 50x faster API calls
+**📚 Detailed Setup:**
+- **Deployment:** See [ENHANCED_DEPLOYMENT_GUIDE.md](ENHANCED_DEPLOYMENT_GUIDE.md)
+- **Development:** See [DEVELOPER_SETUP_GUIDE.md](DEVELOPER_SETUP_GUIDE.md)
+- **API Reference:** See [backend/docs/ENHANCED_API_DOCUMENTATION.md](backend/docs/ENHANCED_API_DOCUMENTATION.md)
 
 ---
 
