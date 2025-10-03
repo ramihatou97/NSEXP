@@ -1,7 +1,10 @@
-# Multi-stage build for optimized production image
-FROM python:3.11-slim AS builder
+# Multi-stage build for FULL production image with ML dependencies
+# This Dockerfile uses requirements.txt with PyTorch, transformers, and medical NLP
+# For lightweight builds, use Dockerfile or Dockerfile.simple instead
 
-# Install build dependencies
+FROM python:3.11 AS builder
+
+# Install build dependencies (more than slim for ML packages)
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
@@ -10,13 +13,14 @@ RUN apt-get update && apt-get install -y \
     libmagic1 \
     libgomp1 \
     wget \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Create working directory
 WORKDIR /app
 
-# Copy requirements (use simplified for Docker builds)
-COPY requirements_simplified.txt requirements.txt
+# Copy full requirements with ML dependencies
+COPY requirements.txt .
 
 # Create virtual environment and install dependencies
 RUN python -m venv /opt/venv
@@ -25,13 +29,17 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Configure pip to use trusted hosts (handles SSL issues in some environments)
 ENV PIP_TRUSTED_HOST="pypi.org pypi.python.org files.pythonhosted.org"
 
+# Install dependencies (this will take longer due to ML packages)
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Production stage
-FROM python:3.11-slim
+# Download spaCy medical model
+RUN python -m spacy download en_core_web_sm || echo "Skipping spaCy model download"
 
-# Install runtime dependencies
+# Production stage
+FROM python:3.11
+
+# Install runtime dependencies (more for ML workloads)
 RUN apt-get update && apt-get install -y \
     libpq5 \
     libmagic1 \
@@ -40,6 +48,11 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr-eng \
     poppler-utils \
     curl \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -74,5 +87,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Default command
-CMD ["uvicorn", "main_simplified:app", "--host", "0.0.0.0", "--port", "8000"]
+# Default command (uses main.py for full ML features)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
