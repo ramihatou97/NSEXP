@@ -40,7 +40,7 @@ echo "   Peer Dependencies:"
 echo "$PEER_DEPS" | grep -E '@types/react|react"' | sed 's/^/     /'
 
 TYPES_REACT_PEER=$(echo "$PEER_DEPS" | grep '@types/react' | grep -o '\^[0-9]*')
-if [[ "$TYPES_REACT_PEER" =~ "^18" ]]; then
+if [[ "$TYPES_REACT_PEER" == ^18* ]]; then
     echo -e "   ${GREEN}✓ Supports @types/react ^18${NC}"
 else
     echo -e "   ${RED}✗ Does not support @types/react ^18${NC}"
