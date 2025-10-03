@@ -23,8 +23,7 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Configure pip to use trusted hosts (handles SSL issues in some environments)
-ENV PIP_TRUSTED_HOST="pypi.org pypi.python.org files.pythonhosted.org"
+# (Removed global PIP_TRUSTED_HOST to avoid disabling SSL verification)
 
 # Copy requirements and install Python dependencies
 COPY requirements_simplified.txt .
