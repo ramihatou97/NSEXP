@@ -77,11 +77,11 @@ else
 fi
 echo ""
 
-echo "6. Testing npm dependency resolution (dry-run)..."
-if npm install --dry-run --legacy-peer-deps > /dev/null 2>&1; then
-    echo -e "   ${GREEN}✓ npm install dry-run successful${NC}"
+echo "6. Checking npm dependency tree for issues..."
+if npm ls --legacy-peer-deps > /dev/null 2>&1; then
+    echo -e "   ${GREEN}✓ No dependency issues detected by npm ls${NC}"
 else
-    echo -e "   ${RED}✗ npm install dry-run failed${NC}"
+    echo -e "   ${RED}✗ Dependency issues detected by npm ls${NC}"
     exit 1
 fi
 echo ""
