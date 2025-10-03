@@ -94,6 +94,7 @@ export interface SearchResult {
   metadata?: any
   url?: string
   relevance_score?: number
+  snippet?: string
 }
 
 // Synthesis types
@@ -110,6 +111,15 @@ export interface SynthesisResult {
   content: any
   success: boolean
   error?: string
+}
+
+// User preferences
+export interface UserPreferences {
+  theme?: 'light' | 'dark' | 'system'
+  language?: string
+  notifications?: boolean
+  default_specialty?: string
+  [key: string]: any
 }
 
 export type CustomType = any
