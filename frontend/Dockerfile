@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies with optimizations for faster builds
-RUN npm ci --prefer-offline --no-audit --progress=false
+RUN npm ci --prefer-offline --no-audit --progress=false --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
