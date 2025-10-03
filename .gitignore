@@ -89,3 +89,4 @@ Thumbs.db
 *.bak
 *.tmp
 *.backup
+*.tsbuildinfo
