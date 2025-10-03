@@ -44,5 +44,5 @@ jobs:
           cache-from: type=registry,ref=${{ vars.DOCKER_USER }}/nsexp-frontend:buildcache
           cache-to: type=registry,ref=${{ vars.DOCKER_USER }}/nsexp-frontend:buildcache,mode=max
           build-args: |
-            NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-            NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_WS_URL=${{ vars.NEXT_PUBLIC_WS_URL }}
