@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,18 +15,18 @@ RUN apt-get update && apt-get install -y \
 # Create working directory
 WORKDIR /app
 
-# Copy requirements
-COPY requirements.txt .
+# Copy requirements (use simplified for Docker builds)
+COPY requirements_simplified.txt requirements.txt
 
 # Create virtual environment and install dependencies
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+# Configure pip to use trusted hosts (handles SSL issues in some environments)
+ENV PIP_TRUSTED_HOST="pypi.org pypi.python.org files.pythonhosted.org"
+
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Download spaCy medical model
-RUN python -m spacy download en_core_web_sm
 
 # Production stage
 FROM python:3.11-slim
@@ -75,4 +75,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Default command
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main_simplified:app", "--host", "0.0.0.0", "--port", "8000"]

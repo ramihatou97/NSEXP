@@ -20,7 +20,6 @@ PyMuPDF==1.23.8  # Advanced PDF processing with image extraction
 pdf2image==1.16.3  # PDF to image conversion
 Pillow==10.1.0  # Image processing
 pytesseract==0.3.10  # OCR for text extraction from images
-easyocr==1.7.0  # Advanced OCR for medical images
 
 # Utilities
 python-dotenv==1.0.0
@@ -44,5 +43,3 @@ tenacity==8.2.3
 # Testing
 pytest==7.4.3
 pytest-asyncio==0.21.1
-faiss-cpu==1.12.0
-faiss-cpu==1.12.0

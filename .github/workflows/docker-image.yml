@@ -24,10 +24,25 @@ jobs:
           driver: cloud
           endpoint: "ramihatoum/nsexm"
 
-      - name: Build and push
+      - name: Build and push backend
         uses: docker/build-push-action@v6
         with:
           context: ./backend
           file: ./backend/Dockerfile
-          tags: "${{ vars.DOCKER_USER }}/docker-build-cloud-demo:latest"
-          outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry' }}
+          tags: "${{ vars.DOCKER_USER }}/nsexp-backend:latest,${{ vars.DOCKER_USER }}/nsexp-backend:${{ github.sha }}"
+          push: ${{ github.event_name != 'pull_request' }}
+          cache-from: type=registry,ref=${{ vars.DOCKER_USER }}/nsexp-backend:buildcache
+          cache-to: type=registry,ref=${{ vars.DOCKER_USER }}/nsexp-backend:buildcache,mode=max
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          tags: "${{ vars.DOCKER_USER }}/nsexp-frontend:latest,${{ vars.DOCKER_USER }}/nsexp-frontend:${{ github.sha }}"
+          push: ${{ github.event_name != 'pull_request' }}
+          cache-from: type=registry,ref=${{ vars.DOCKER_USER }}/nsexp-frontend:buildcache
+          cache-to: type=registry,ref=${{ vars.DOCKER_USER }}/nsexp-frontend:buildcache,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+            NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
