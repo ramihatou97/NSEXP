@@ -266,7 +266,7 @@ export default function SearchPage() {
                             size="small"
                             color={getResultColor(result.type)}
                           />
-                          {searchMode === 'semantic' && (
+                          {searchMode === 'semantic' && result.relevance_score && (
                             <Chip
                               label={`${Math.round(result.relevance_score * 100)}% match`}
                               size="small"

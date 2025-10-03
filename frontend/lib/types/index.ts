@@ -93,6 +93,7 @@ export interface SearchResult {
   score: number
   metadata?: any
   url?: string
+  relevance_score?: number
 }
 
 // Synthesis types
