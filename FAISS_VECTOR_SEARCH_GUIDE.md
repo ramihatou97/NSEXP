@@ -4,6 +4,8 @@
 
 The Neurosurgical Knowledge Management System now uses **FAISS (Facebook AI Similarity Search)** for efficient vector-based semantic search instead of nmslib. This provides better performance, reliability, and easier maintenance.
 
+> **📋 Requirements Note**: FAISS is included in both `requirements_simplified.txt` and `requirements.txt`. See [REQUIREMENTS_STRATEGY.md](REQUIREMENTS_STRATEGY.md) for choosing the right file.
+
 ## What Changed
 
 ### ✅ Completed Updates
