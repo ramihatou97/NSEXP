@@ -5,7 +5,7 @@ Handles reference management for neurosurgical literature
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_
 from typing import List, Optional, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 from models.database_simplified import Reference, Citation
 from services.pdf_service import PDFProcessor
@@ -68,8 +68,8 @@ class ReferenceService:
             specialty=reference_data.get("specialty"),
             content=reference_data.get("content", ""),
             metadata_=reference_data.get("metadata", {}),
-            added_at=datetime.utcnow(),
-            last_accessed=datetime.utcnow()
+            added_at=datetime.now(timezone.utc),
+            last_accessed=datetime.now(timezone.utc)
         )
 
         self.db.add(reference)
@@ -116,7 +116,7 @@ class ReferenceService:
             if hasattr(reference, key):
                 setattr(reference, key, value)
 
-        reference.last_accessed = datetime.utcnow()
+        reference.last_accessed = datetime.now(timezone.utc)
 
         await self.db.commit()
         await self.db.refresh(reference)
@@ -174,7 +174,7 @@ class ReferenceService:
             reference_id=reference_id,
             context=context,
             location=location,
-            created_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc)
         )
 
         self.db.add(citation)

@@ -4,7 +4,7 @@ Manages chapter CRUD operations with mock data support
 """
 
 from typing import Dict, List, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -136,8 +136,8 @@ async def create_new_chapter(chapter_data: dict, background_tasks=None) -> Dict[
             "content": chapter_data.get("content", ""),
             "summary": chapter_data.get("summary", ""),
             "status": "draft",
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
         }
         
         logger.info(f"Created chapter (mock): {chapter['title']}")
@@ -166,7 +166,7 @@ async def update_existing_chapter(chapter_id: str, chapter_data: dict) -> Dict[s
             "content": chapter_data.get("content", ""),
             "summary": chapter_data.get("summary", ""),
             "status": chapter_data.get("status", "draft"),
-            "updated_at": datetime.utcnow().isoformat()
+            "updated_at": datetime.now(timezone.utc).isoformat()
         }
         
         logger.info(f"Updated chapter (mock): {chapter_id}")

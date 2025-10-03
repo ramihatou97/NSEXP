@@ -1,8 +1,49 @@
 """
-Main FastAPI Application for Neurosurgical Knowledge Management System
-Specialized for neurosurgical content synthesis, management, and AI-powered assistance
+⚠️ DEPRECATED - DO NOT USE ⚠️
+
+This file is DEPRECATED and NON-FUNCTIONAL.
+It references API router modules that don't exist in the current architecture.
+
+USE INSTEAD: main_simplified.py
+
+This file is kept for reference only and documents the intended full-featured
+architecture with modular routers. The current production system uses main_simplified.py
+which implements all routes inline.
+
+To migrate to this architecture:
+1. Create backend/api/ directory structure
+2. Create router modules for each feature (auth, chapters, synthesis, etc.)
+3. Implement proper module separation
+4. Update docker-compose files to use main:app instead of main_simplified:app
+
+Current Status: BROKEN - Missing API router modules
+Production File: main_simplified.py (WORKING)
 """
 
+# THESE IMPORTS WILL FAIL - API modules don't exist
+# from api.auth.router import router as auth_router
+# from api.chapters.router import router as chapters_router
+# from api.synthesis.router import router as synthesis_router
+# from api.search.router import router as search_router
+# from api.qa.router import router as qa_router
+# from api.citations.router import router as citations_router
+# from api.neurosurgery.router import router as neurosurgery_router
+
+# DO NOT ATTEMPT TO RUN THIS FILE
+# Use: uvicorn main_simplified:app --reload
+
+import sys
+print("=" * 80)
+print("⚠️  ERROR: main.py is deprecated and non-functional")
+print("=" * 80)
+print("This file references API router modules that don't exist.")
+print("\nUse instead: main_simplified.py")
+print("\nCommand: uvicorn main_simplified:app --host 0.0.0.0 --port 8000 --reload")
+print("=" * 80)
+sys.exit(1)
+
+# The rest of this file is commented out to prevent accidental execution
+"""
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -13,16 +54,7 @@ from prometheus_client import make_asgi_app
 import sentry_sdk
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 import os
-from datetime import datetime
-
-# Import routers
-from api.auth.router import router as auth_router
-from api.chapters.router import router as chapters_router
-from api.synthesis.router import router as synthesis_router
-from api.search.router import router as search_router
-from api.qa.router import router as qa_router
-from api.citations.router import router as citations_router
-from api.neurosurgery.router import router as neurosurgery_router
+from datetime import datetime, timezone
 
 # Import configuration
 from config.settings import settings
@@ -158,7 +190,7 @@ async def health_check():
     """Basic health check"""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "service": "neurosurgical-knowledge-system",
         "version": "2.0.0"
     }
@@ -170,7 +202,7 @@ async def detailed_health_check():
 
     health_status = {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "components": {}
     }
 

@@ -4,7 +4,7 @@ Tracks user behavior and generates personalized suggestions
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any
 from collections import defaultdict, Counter
 
@@ -24,7 +24,7 @@ async def track_action(action_type: str, context: dict):
     action = {
         "action_type": action_type,
         "context": context,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
     _user_actions.append(action)

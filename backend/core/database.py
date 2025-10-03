@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 import logging
 from typing import AsyncGenerator, Optional
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 
 from config.settings import settings
 
@@ -197,7 +197,7 @@ class DatabaseManager:
         Check database health and connectivity
         """
         try:
-            start_time = datetime.utcnow()
+            start_time = datetime.now(timezone.utc)
 
             async with engine.connect() as conn:
                 result = await conn.execute(text("SELECT 1"))
@@ -216,7 +216,7 @@ class DatabaseManager:
                 stats_result = await conn.execute(stats_query)
                 stats = dict(stats_result.first()._mapping)
 
-            response_time = (datetime.utcnow() - start_time).total_seconds() * 1000
+            response_time = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
 
             return {
                 "status": "healthy",
