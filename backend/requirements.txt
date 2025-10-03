@@ -1,3 +1,8 @@
+# FULL PRODUCTION REQUIREMENTS
+# WARNING: This file contains heavy ML dependencies (PyTorch, transformers, etc.)
+# For Docker builds, use requirements_simplified.txt instead:
+# docker build -f Dockerfile.simple .
+#
 # Core Framework
 fastapi==0.104.1
 uvicorn==0.24.0
