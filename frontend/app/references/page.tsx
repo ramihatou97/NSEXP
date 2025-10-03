@@ -173,7 +173,7 @@ export default function ReferencesPage() {
       {!isLoading && !error && references && references.length > 0 && (
         <>
           <Grid container spacing={3}>
-            {references.map((reference) => (
+            {references.map((reference: any) => (
               <Grid item xs={12} key={reference.id}>
                 <Card>
                   <CardContent>

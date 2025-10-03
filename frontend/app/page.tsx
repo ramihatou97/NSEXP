@@ -31,7 +31,14 @@ const neurosurgicalSpecialties = [
   { name: 'Skull Base', icon: Biotech, color: '#9c27b0' },
 ]
 
-const features = [
+const features: Array<{
+  title: string
+  description: string
+  icon: React.ComponentType
+  href: string
+  color: 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error'
+  badge?: string
+}> = [
   {
     title: 'Comprehensive Synthesis',
     description: 'Generate chapters with 150+ sections covering all aspects of neurosurgical topics - NEW in v2.2!',

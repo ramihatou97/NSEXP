@@ -85,7 +85,7 @@ export default function QAPage() {
                 <MenuItem value="">
                   <em>All Chapters</em>
                 </MenuItem>
-                {chapters?.map((chapter) => (
+                {chapters?.map((chapter: any) => (
                   <MenuItem key={chapter.id} value={chapter.id}>
                     {chapter.title}
                   </MenuItem>
@@ -153,7 +153,7 @@ export default function QAPage() {
                     Sources:
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    {askQuestion.data.sources.map((source, index) => (
+                    {askQuestion.data.sources.map((source: any, index: number) => (
                       <Chip
                         key={index}
                         label={source}
@@ -216,7 +216,7 @@ export default function QAPage() {
 
                 {!historyLoading && history && history.length > 0 && (
                   <Box sx={{ maxHeight: 600, overflow: 'auto' }}>
-                    {history.map((item, index) => (
+                    {history.map((item: any, index: number) => (
                       <Box key={item.id || index}>
                         <Box sx={{ py: 2 }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>

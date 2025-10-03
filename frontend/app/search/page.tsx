@@ -232,7 +232,7 @@ export default function SearchPage() {
                 <Card
                   key={result.id}
                   component={Link}
-                  href={result.url}
+                  href={result.url || '#'}
                   sx={{
                     textDecoration: 'none',
                     transition: 'all 0.2s',

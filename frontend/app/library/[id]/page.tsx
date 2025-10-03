@@ -158,7 +158,7 @@ export default function ChapterDetailPage() {
 
             {chapter.metadata?.tags && chapter.metadata.tags.length > 0 && (
               <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 2 }}>
-                {chapter.metadata.tags.map((tag) => (
+                {chapter.metadata.tags.map((tag: string) => (
                   <Chip key={tag} label={tag} size="small" variant="outlined" />
                 ))}
               </Box>
@@ -279,7 +279,7 @@ export default function ChapterDetailPage() {
         <Divider sx={{ mb: 3 }} />
 
         {chapter.content?.sections && chapter.content.sections.length > 0 ? (
-          chapter.content.sections.map((section, index) => (
+          chapter.content.sections.map((section: any, index: number) => (
             <Box key={section.id} sx={{ mb: 4 }}>
               <Typography variant="h6" gutterBottom>
                 {index + 1}. {section.title}
@@ -293,7 +293,7 @@ export default function ChapterDetailPage() {
 
               {section.subsections && section.subsections.length > 0 && (
                 <Box sx={{ ml: 3, mt: 2 }}>
-                  {section.subsections.map((subsection, subIndex) => (
+                  {section.subsections.map((subsection: any, subIndex: number) => (
                     <Box key={subsection.id} sx={{ mb: 3 }}>
                       <Typography variant="subtitle1" gutterBottom>
                         {index + 1}.{subIndex + 1} {subsection.title}

@@ -64,7 +64,7 @@ export default function CitationsPage() {
     }
 
     // Convert network data to graph nodes/edges
-    const nodes: Node[] = network.nodes.map((node, i) => ({
+    const nodes: Node[] = network.nodes.map((node: any, i: number) => ({
       id: node.id,
       x: canvas.width / 2 + Math.random() * 200 - 100,
       y: canvas.height / 2 + Math.random() * 200 - 100,
@@ -218,7 +218,7 @@ export default function CitationsPage() {
           <MenuItem value="">
             <em>Select a chapter...</em>
           </MenuItem>
-          {chapters?.map((chapter) => (
+          {chapters?.map((chapter: any) => (
             <MenuItem key={chapter.id} value={chapter.id}>
               {chapter.title}
             </MenuItem>
@@ -372,7 +372,7 @@ export default function CitationsPage() {
                   Nodes
                 </Typography>
                 <List dense sx={{ maxHeight: 300, overflow: 'auto' }}>
-                  {network.nodes.slice(0, 10).map((node, index) => (
+                  {network.nodes.slice(0, 10).map((node: any, index: number) => (
                     <Box key={node.id}>
                       <ListItem>
                         <ListItemText
