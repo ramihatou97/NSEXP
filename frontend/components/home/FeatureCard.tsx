@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, Typography, Box, SvgIconProps } from '@mui/material'
+import { Card, CardContent, Typography, Box, SvgIconProps, Chip } from '@mui/material'
 import { ArrowForward } from '@mui/icons-material'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -11,9 +11,10 @@ interface FeatureCardProps {
   icon: React.ComponentType<SvgIconProps>
   href: string
   color: 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error'
+  badge?: string
 }
 
-export function FeatureCard({ title, description, icon: Icon, href, color }: FeatureCardProps) {
+export function FeatureCard({ title, description, icon: Icon, href, color, badge }: FeatureCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -4 }}
@@ -28,11 +29,26 @@ export function FeatureCard({ title, description, icon: Icon, href, color }: Fea
           flexDirection: 'column',
           textDecoration: 'none',
           transition: 'all 0.3s',
+          position: 'relative',
           '&:hover': {
             boxShadow: 6,
           },
         }}
       >
+        {badge && (
+          <Chip
+            label={badge}
+            color="secondary"
+            size="small"
+            sx={{
+              position: 'absolute',
+              top: 12,
+              right: 12,
+              fontWeight: 'bold',
+              fontSize: '0.7rem',
+            }}
+          />
+        )}
         <CardContent sx={{ flexGrow: 1 }}>
           <Box
             sx={{

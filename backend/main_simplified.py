@@ -452,6 +452,456 @@ async def update_chapter_with_gap(gap_data: dict):
     logger.info(f"Updating chapter with filled gap: {gap_data.get('gap_id')}")
 
 
+# ============= ENHANCED SERVICES ENDPOINTS (New) =============
+
+@app.post("/api/v1/images/extract")
+async def extract_images_from_pdf(
+    pdf_path: str,
+    output_dir: str = None,
+    min_width: int = 100,
+    min_height: int = 100,
+    extract_text: bool = True
+):
+    """
+    Extract images from PDF with OCR and classification
+    """
+    from services.image_extraction_service import image_extraction_service
+    
+    try:
+        result = await image_extraction_service.extract_images_from_pdf(
+            pdf_path=pdf_path,
+            output_dir=output_dir,
+            min_width=min_width,
+            min_height=min_height,
+            extract_text=extract_text
+        )
+        return result
+    except FileNotFoundError as e:
+        return JSONResponse(
+            status_code=404,
+            content={"error": str(e)}
+        )
+    except Exception as e:
+        logger.error(f"Image extraction failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Image extraction failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/images/analyze")
+async def analyze_anatomical_image(
+    image_path: str
+):
+    """
+    Analyze anatomical/medical image using AI vision
+    """
+    from services.image_extraction_service import image_extraction_service
+    
+    try:
+        result = await image_extraction_service.analyze_anatomical_image(
+            image_path=image_path,
+            ai_service=ai_manager
+        )
+        return result
+    except FileNotFoundError as e:
+        return JSONResponse(
+            status_code=404,
+            content={"error": str(e)}
+        )
+    except Exception as e:
+        logger.error(f"Image analysis failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Image analysis failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/synthesis/comprehensive")
+async def synthesize_comprehensive_chapter(
+    topic: str,
+    specialty: str,
+    references: List[dict] = [],
+    focus_areas: List[str] = None,
+    include_images: bool = True
+):
+    """
+    Generate comprehensive neurosurgical chapter with full structure
+    """
+    from services.enhanced_synthesis_service import enhanced_synthesis_service
+    
+    try:
+        result = await enhanced_synthesis_service.synthesize_comprehensive_chapter(
+            topic=topic,
+            specialty=specialty,
+            references=references,
+            focus_areas=focus_areas,
+            include_images=include_images
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Comprehensive synthesis failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Synthesis failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/synthesis/summary")
+async def generate_chapter_summary(
+    chapter_content: dict,
+    summary_type: str = "executive"
+):
+    """
+    Generate different types of summaries from chapter content
+    Types: executive, detailed, technical, bullet_points
+    """
+    from services.enhanced_synthesis_service import enhanced_synthesis_service
+    
+    try:
+        result = await enhanced_synthesis_service.generate_summary(
+            chapter_content=chapter_content,
+            summary_type=summary_type
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Summary generation failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Summary generation failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/search/deep")
+async def deep_literature_search(
+    query: str,
+    sources: List[str] = None,
+    max_results: int = 20,
+    filters: dict = None
+):
+    """
+    Deep search across medical literature databases
+    Sources: pubmed, scholar, arxiv
+    """
+    from services.deep_search_service import deep_search_service
+    
+    try:
+        if sources is None:
+            sources = ["pubmed"]
+        
+        result = await deep_search_service.search_medical_literature(
+            query=query,
+            sources=sources,
+            max_results=max_results,
+            filters=filters
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Deep search failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Deep search failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/references/enrich")
+async def enrich_reference(
+    reference: dict
+):
+    """
+    Enrich reference with metadata from online databases
+    """
+    from services.deep_search_service import deep_search_service
+    
+    try:
+        result = await deep_search_service.enrich_reference_metadata(reference)
+        return result
+    except Exception as e:
+        logger.error(f"Reference enrichment failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Enrichment failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/pdf/process-advanced")
+async def process_pdf_advanced(
+    pdf_path: str,
+    extract_images: bool = False,
+    extract_tables: bool = False
+):
+    """
+    Advanced PDF processing with image and table extraction
+    """
+    from services.pdf_service import PDFProcessor
+    
+    try:
+        processor = PDFProcessor()
+        result = await processor.process_pdf(
+            pdf_path=pdf_path,
+            extract_images=extract_images,
+            extract_tables=extract_tables
+        )
+        return result
+    except FileNotFoundError as e:
+        return JSONResponse(
+            status_code=404,
+            content={"error": str(e)}
+        )
+    except Exception as e:
+        logger.error(f"PDF processing failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "PDF processing failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/pdf/chunk")
+async def chunk_pdf_content(
+    pdf_path: str,
+    chunk_size: int = 1000,
+    overlap: int = 200
+):
+    """
+    Chunk PDF content for processing with AI models
+    """
+    from services.pdf_service import PDFProcessor
+    
+    try:
+        processor = PDFProcessor()
+        result = await processor.chunk_pdf_content(
+            pdf_path=pdf_path,
+            chunk_size=chunk_size,
+            overlap=overlap
+        )
+        return {"success": True, "chunks": result, "chunk_count": len(result)}
+    except FileNotFoundError as e:
+        return JSONResponse(
+            status_code=404,
+            content={"error": str(e)}
+        )
+    except Exception as e:
+        logger.error(f"PDF chunking failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "PDF chunking failed", "details": str(e)}
+        )
+
+
+# ============= ALIVE CHAPTER ENDPOINTS (New) =============
+
+@app.get("/api/v1/alive-chapters/status")
+async def get_alive_chapter_status():
+    """
+    Check which alive chapter features are available
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    availability = alive_chapter_integration.is_available()
+    
+    return {
+        "success": True,
+        "features": availability,
+        "overall_status": "available" if any(availability.values()) else "unavailable"
+    }
+
+
+@app.post("/api/v1/alive-chapters/activate")
+async def activate_chapter(
+    chapter_id: str,
+    chapter: dict
+):
+    """
+    Activate a chapter to enable alive features
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.activate_chapter(
+            chapter=chapter,
+            chapter_id=chapter_id
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Chapter activation failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Activation failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/alive-chapters/qa")
+async def ask_chapter_question(
+    chapter_id: str,
+    question: str,
+    user_id: str = "default_user",
+    context: str = None
+):
+    """
+    Ask a question about a specific chapter
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.process_chapter_question(
+            chapter_id=chapter_id,
+            question=question,
+            user_id=user_id,
+            context=context
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Chapter Q&A failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Q&A failed", "details": str(e)}
+        )
+
+
+@app.get("/api/v1/alive-chapters/citations/{chapter_id}")
+async def get_chapter_citations(
+    chapter_id: str
+):
+    """
+    Get citation network for a chapter
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.get_citation_network(chapter_id)
+        return result
+    except Exception as e:
+        logger.error(f"Citation network retrieval failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Citation retrieval failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/alive-chapters/citations/suggest")
+async def suggest_chapter_citations(
+    chapter_id: str,
+    content: str
+):
+    """
+    Suggest citations for chapter content
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.suggest_citations(
+            chapter_id=chapter_id,
+            content=content
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Citation suggestion failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Citation suggestion failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/alive-chapters/merge")
+async def merge_chapter_knowledge(
+    chapter_id: str,
+    new_content: str,
+    source: str,
+    metadata: dict = None
+):
+    """
+    Intelligently merge new knowledge into chapter
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.merge_new_knowledge(
+            chapter_id=chapter_id,
+            new_content=new_content,
+            source=source,
+            metadata=metadata
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Knowledge merge failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Merge failed", "details": str(e)}
+        )
+
+
+@app.get("/api/v1/alive-chapters/health/{chapter_id}")
+async def get_chapter_health_metrics(
+    chapter_id: str,
+    user_id: str = "default_user"
+):
+    """
+    Get comprehensive health metrics for an alive chapter
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.get_chapter_health(
+            chapter_id=chapter_id,
+            user_id=user_id
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Health check failed", "details": str(e)}
+        )
+
+
+@app.post("/api/v1/alive-chapters/evolve/{chapter_id}")
+async def evolve_alive_chapter(
+    chapter_id: str,
+    user_id: str = "default_user"
+):
+    """
+    Trigger complete chapter evolution
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.evolve_chapter(
+            chapter_id=chapter_id,
+            user_id=user_id
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Chapter evolution failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Evolution failed", "details": str(e)}
+        )
+
+
+@app.get("/api/v1/alive-chapters/suggestions")
+async def get_behavioral_suggestions(
+    user_id: str = "default_user",
+    chapter_id: str = None
+):
+    """
+    Get personalized suggestions based on behavior
+    """
+    from services.alive_chapter_integration import alive_chapter_integration
+    
+    try:
+        result = await alive_chapter_integration.get_behavioral_suggestions(
+            user_id=user_id,
+            chapter_id=chapter_id
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Suggestion retrieval failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Suggestion retrieval failed", "details": str(e)}
+        )
+
+
 # ============= ERROR HANDLER =============
 
 @app.exception_handler(Exception)
