@@ -4,7 +4,7 @@ Uses Python's functools and dict for fast, lightweight caching
 """
 from functools import wraps, lru_cache
 from typing import Callable, Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 from utils.logger import get_logger
@@ -61,7 +61,7 @@ class SimpleCache:
         """
         self._cache[key] = value
         self._timestamps[key] = {
-            "created": datetime.utcnow(),
+            "created": datetime.now(timezone.utc),
             "ttl": ttl or self._default_ttl
         }
         logger.debug(f"Cache set: {key} (TTL: {ttl or self._default_ttl}s)")
@@ -84,7 +84,7 @@ class SimpleCache:
             return True
 
         timestamp_info = self._timestamps[key]
-        age = (datetime.utcnow() - timestamp_info["created"]).total_seconds()
+        age = (datetime.now(timezone.utc) - timestamp_info["created"]).total_seconds()
         return age > timestamp_info["ttl"]
 
     def get_stats(self) -> dict:

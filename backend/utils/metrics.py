@@ -3,7 +3,7 @@ Performance Metrics Tracking
 Simple metrics collection for monitoring system performance
 """
 from typing import Dict, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 import time
@@ -46,7 +46,7 @@ class PerformanceMetrics:
         """Initialize metrics collector"""
         self._endpoint_metrics: Dict[str, MetricData] = defaultdict(MetricData)
         self._ai_metrics: Dict[str, MetricData] = defaultdict(MetricData)
-        self._start_time = datetime.utcnow()
+        self._start_time = datetime.now(timezone.utc)
 
     def record_api_call(self, endpoint: str, duration_ms: float) -> None:
         """
@@ -126,7 +126,7 @@ class PerformanceMetrics:
         total_api_calls = sum(m.count for m in self._endpoint_metrics.values())
         total_ai_calls = sum(m.count for m in self._ai_metrics.values())
 
-        uptime = datetime.utcnow() - self._start_time
+        uptime = datetime.now(timezone.utc) - self._start_time
         uptime_seconds = uptime.total_seconds()
 
         return {
@@ -164,7 +164,7 @@ class PerformanceMetrics:
         """Reset all metrics"""
         self._endpoint_metrics.clear()
         self._ai_metrics.clear()
-        self._start_time = datetime.utcnow()
+        self._start_time = datetime.now(timezone.utc)
         logger.info("Performance metrics reset")
 
 

@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass
 from enum import Enum
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -594,7 +594,7 @@ class UsageTracker:
     def __init__(self):
         self.usage = {provider: {"tokens": 0, "cost": 0.0, "calls": 0}
                      for provider in AIProvider}
-        self.last_reset = datetime.utcnow()
+        self.last_reset = datetime.now(timezone.utc)
 
     def track_usage(self, provider: AIProvider, tokens: int, cost: float):
         """Track usage for a provider"""
@@ -618,7 +618,7 @@ class UsageTracker:
         """Reset usage tracking"""
         for provider in self.usage:
             self.usage[provider] = {"tokens": 0, "cost": 0.0, "calls": 0}
-        self.last_reset = datetime.utcnow()
+        self.last_reset = datetime.now(timezone.utc)
 
 
 # Global instance

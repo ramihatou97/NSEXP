@@ -3,7 +3,7 @@ Simplified Synthesis Service - Single User
 Handles AI-powered content synthesis for neurosurgical knowledge
 """
 from typing import List, Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 from services.ai_service import AIService
 
@@ -50,7 +50,7 @@ class SynthesisService:
                 "specialty": specialty,
                 "focus_areas": focus_areas,
                 "model": synthesis.get("model", "gpt-4"),
-                "generated_at": datetime.utcnow().isoformat(),
+                "generated_at": datetime.now(timezone.utc).isoformat(),
                 "token_count": synthesis.get("token_count", 0)
             }
         }
@@ -91,7 +91,7 @@ class SynthesisService:
             "technique_a": technique_a["name"],
             "technique_b": technique_b["name"],
             "specialty": specialty,
-            "generated_at": datetime.utcnow().isoformat()
+            "generated_at": datetime.now(timezone.utc).isoformat()
         }
 
     async def extract_key_concepts(
@@ -124,7 +124,7 @@ class SynthesisService:
             "techniques": concepts.get("techniques", []),
             "anatomy": concepts.get("anatomy", []),
             "specialty": specialty,
-            "extracted_at": datetime.utcnow().isoformat()
+            "extracted_at": datetime.now(timezone.utc).isoformat()
         }
 
     async def generate_summary(

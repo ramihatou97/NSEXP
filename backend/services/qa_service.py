@@ -3,7 +3,7 @@ Simplified Q&A Service - Single User
 Handles question-answering for neurosurgical queries
 """
 from typing import Dict, Any, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 from services.ai_service import AIService
 
@@ -37,7 +37,7 @@ class QAService:
             "sources": answer.get("sources", []),
             "specialty": specialty,
             "model": model,
-            "answered_at": datetime.utcnow().isoformat()
+            "answered_at": datetime.now(timezone.utc).isoformat()
         }
 
     async def answer_with_references(
@@ -75,7 +75,7 @@ Provide:
             "answer": answer["text"],
             "references_used": [ref["id"] for ref in references],
             "specialty": specialty,
-            "answered_at": datetime.utcnow().isoformat()
+            "answered_at": datetime.now(timezone.utc).isoformat()
         }
 
     async def generate_follow_up_questions(
@@ -144,7 +144,7 @@ Provide JSON format response.
             "validated": True,
             "scores": validation.get("scores", {}),
             "concerns": validation.get("concerns", []),
-            "validated_at": datetime.utcnow().isoformat()
+            "validated_at": datetime.now(timezone.utc).isoformat()
         }
 
     def _create_qa_prompt(

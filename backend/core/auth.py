@@ -1,22 +1,45 @@
 """
+⚠️ DEPRECATED - NOT USED IN SIMPLIFIED SYSTEM ⚠️
+
 Authentication and Authorization System
 Specialized for neurosurgical practitioners and researchers
+
+STATUS: This file is NOT USED in the current single-user simplified system.
+
+The NSEXP system is designed as a single-user personal knowledge management
+tool and does NOT require authentication. This file was part of a planned
+multi-user system that was never implemented.
+
+ISSUES:
+1. Imports from non-existent 'schemas.auth' module
+2. References User model that exists but is unused
+3. Not imported by main_simplified.py
+4. Adds unnecessary complexity
+
+If you need authentication:
+1. Create backend/schemas/auth.py with required Pydantic models
+2. Update main_simplified.py to use auth middleware
+3. Add user management endpoints
+4. Test thoroughly
+
+For now, this file should be archived or removed.
 """
 
-from datetime import datetime, timedelta
-from typing import Optional, Union, Dict, Any
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-import logging
+# THESE IMPORTS WILL FAIL - schemas.auth doesn't exist
+# from datetime import datetime, timedelta, timezone
+# from typing import Optional, Union, Dict, Any
+# from jose import JWTError, jwt
+# from passlib.context import CryptContext
+# from fastapi import Depends, HTTPException, status
+# from fastapi.security import OAuth2PasswordBearer
+# from sqlalchemy.ext.asyncio import AsyncSession
+# from sqlalchemy import select
+# import logging
 
-from config.settings import settings
-from core.database import get_db
-from models.database import User, NeurosurgicalSpecialty
-from schemas.auth import TokenData, UserCreate, UserResponse
+# from config.settings import settings
+# from core.database import get_db
+# from models.database import User, NeurosurgicalSpecialty
+# from schemas.auth import TokenData, UserCreate, UserResponse  # MISSING MODULE
 
 logger = logging.getLogger(__name__)
 
@@ -60,13 +83,13 @@ class AuthService:
         to_encode = data.copy()
 
         if expires_delta:
-            expire = datetime.utcnow() + expires_delta
+            expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
         to_encode.update({
             "exp": expire,
-            "iat": datetime.utcnow(),
+            "iat": datetime.now(timezone.utc),
             "type": "access"
         })
 
@@ -79,11 +102,11 @@ class AuthService:
         Create JWT refresh token
         """
         to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
         to_encode.update({
             "exp": expire,
-            "iat": datetime.utcnow(),
+            "iat": datetime.now(timezone.utc),
             "type": "refresh"
         })
 
@@ -108,7 +131,7 @@ class AuthService:
             return None
 
         # Update last login
-        user.last_login = datetime.utcnow()
+        user.last_login = datetime.now(timezone.utc)
         await db.commit()
 
         return user

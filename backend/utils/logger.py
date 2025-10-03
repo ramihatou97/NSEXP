@@ -6,7 +6,7 @@ import logging
 import sys
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from logging.handlers import RotatingFileHandler
 from typing import Optional, Dict, Any
 import traceback
@@ -20,7 +20,7 @@ class StructuredFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format log record as JSON"""
         log_data = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
@@ -71,7 +71,7 @@ class ConsoleFormatter(logging.Formatter):
 
         # Format: timestamp - level - module:function:line - message
         formatted = (
-            f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} - "
+            f"{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} - "
             f"{level_color}{record.levelname:8}{reset} - "
             f"{record.module}:{record.funcName}:{record.lineno} - "
             f"{record.getMessage()}"

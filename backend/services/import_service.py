@@ -5,7 +5,7 @@ Supports JSON, Markdown, and other formats
 
 import json
 from typing import Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 import uuid
 
@@ -83,7 +83,7 @@ async def import_chapter(data: Dict[str, Any]) -> Dict[str, Any]:
             if not chapter_data["metadata"]:
                 chapter_data["metadata"] = {}
             chapter_data["metadata"]["original_id"] = data["id"]
-            chapter_data["metadata"]["imported_at"] = datetime.utcnow().isoformat()
+            chapter_data["metadata"]["imported_at"] = datetime.now(timezone.utc).isoformat()
 
         # Create chapter
         result = await create_new_chapter(chapter_data, background_tasks=None)
@@ -217,7 +217,7 @@ async def import_from_markdown(markdown_content: str) -> Dict[str, Any]:
             "metadata": {
                 "tags": [],
                 "imported_from": "markdown",
-                "imported_at": datetime.utcnow().isoformat()
+                "imported_at": datetime.now(timezone.utc).isoformat()
             }
         }
 

@@ -6,7 +6,7 @@ Handles PDF textbook uploads and processing
 import logging
 from typing import List, Dict, Any
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +31,8 @@ async def process_textbook(file_path: str, title: str, specialty: str = None):
         "upload_status": "processing",
         "processing_progress": 0,
         "extracted_chapters": [],
-        "created_at": datetime.utcnow().isoformat(),
-        "updated_at": datetime.utcnow().isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
     }
 
     _textbooks.append(textbook)

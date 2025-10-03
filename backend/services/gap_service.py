@@ -6,7 +6,7 @@ Detects and auto-fills knowledge gaps in chapters
 import logging
 from typing import List, Dict, Any
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ async def get_gaps_for_chapter(chapter_id: str):
             "severity": "high",
             "suggested_content": "Common complications include: hemorrhage, infection, neurological deficits...",
             "confidence_score": 0.85,
-            "detected_at": datetime.utcnow().isoformat()
+            "detected_at": datetime.now(timezone.utc).isoformat()
         },
         {
             "id": str(uuid.uuid4()),
@@ -39,7 +39,7 @@ async def get_gaps_for_chapter(chapter_id: str):
             "severity": "medium",
             "suggested_content": "Add detailed subsections for: positioning, exposure, closure...",
             "confidence_score": 0.72,
-            "detected_at": datetime.utcnow().isoformat()
+            "detected_at": datetime.now(timezone.utc).isoformat()
         },
         {
             "id": str(uuid.uuid4()),
@@ -51,7 +51,7 @@ async def get_gaps_for_chapter(chapter_id: str):
             "severity": "low",
             "suggested_content": "Consider adding recent literature from 2020-2024",
             "confidence_score": 0.68,
-            "detected_at": datetime.utcnow().isoformat()
+            "detected_at": datetime.now(timezone.utc).isoformat()
         }
     ]
 
