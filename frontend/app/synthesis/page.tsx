@@ -28,6 +28,7 @@ import {
   WifiOff,
 } from '@mui/icons-material'
 import { useSynthesisWithProgress } from '@/lib/hooks/useWebSocket'
+import { PageLoader } from '@/components/LoadingStates'
 
 const specialties = [
   'Neurosurgery General',

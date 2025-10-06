@@ -299,3 +299,13 @@ export function useUpdatePreferences() {
 
 // Re-export WebSocket hooks
 export * from './useWebSocket'
+
+// Re-export optimistic mutation hooks
+export {
+  useCreateChapterOptimistic,
+  useUpdateChapterOptimistic,
+  useDeleteChapterOptimistic,
+  useCreateReferenceOptimistic,
+  useSubmitQuestionOptimistic,
+  useSynthesisOptimistic,
+} from './useOptimisticMutation'

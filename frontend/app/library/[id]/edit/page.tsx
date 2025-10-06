@@ -22,8 +22,11 @@ import {
   Add,
   Delete,
   ArrowBack,
+  CloudDone,
+  CloudSync,
 } from '@mui/icons-material'
 import { useChapter, useUpdateChapter } from '@/lib/hooks'
+import { useAutosaveSimple } from '@/lib/hooks/useAutosave'
 import type { Chapter, UpdateChapterRequest } from '@/lib/types'
 
 const SPECIALTIES = [
@@ -83,6 +86,31 @@ export default function ChapterEditPage() {
       })
     }
   }, [chapter])
+
+  // Auto-save functionality
+  const { isSaving, lastSaved } = useAutosaveSimple({
+    data: formData,
+    onSave: async (data) => {
+      const updateData: UpdateChapterRequest = {
+        title: data.title,
+        specialty: data.specialty,
+        status: data.status as any,
+        content: {
+          summary: data.summary,
+          sections: data.sections,
+        },
+        metadata: {
+          tags: data.tags,
+        },
+      }
+      await updateChapter.mutateAsync({
+        id: chapterId,
+        data: updateData,
+      })
+    },
+    delay: 3000,
+    enabled: !!chapter, // Only enable autosave after chapter loads
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,9 +213,29 @@ export default function ChapterEditPage() {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">
-          Edit Chapter
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography variant="h4">
+            Edit Chapter
+          </Typography>
+          {/* Auto-save indicator */}
+          {isSaving ? (
+            <Chip
+              icon={<CloudSync />}
+              label="Saving..."
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
+          ) : lastSaved ? (
+            <Chip
+              icon={<CloudDone />}
+              label={`Saved ${new Date(lastSaved).toLocaleTimeString()}`}
+              size="small"
+              color="success"
+              variant="outlined"
+            />
+          ) : null}
+        </Box>
         <Button
           startIcon={<ArrowBack />}
           onClick={() => router.push(`/library/${chapterId}`)}

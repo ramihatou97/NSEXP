@@ -13,6 +13,9 @@ interface SynthesisProgress {
   progress: number
   step?: string
   details?: string
+  current_step?: number
+  completed_steps?: number
+  total_steps?: number
 }
 
 interface SynthesisResult {

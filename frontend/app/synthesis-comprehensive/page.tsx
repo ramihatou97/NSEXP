@@ -34,6 +34,7 @@ import {
   ComprehensiveSynthesisRequest,
   ComprehensiveSynthesisResponse,
 } from '@/lib/api/enhanced-services'
+import { PageLoader } from '@/components/LoadingStates'
 
 const specialties = [
   'TUMOR',

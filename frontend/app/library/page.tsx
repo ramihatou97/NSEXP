@@ -30,6 +30,7 @@ import {
 import Link from 'next/link'
 import { useChapters, useDeleteChapter } from '@/lib/hooks'
 import type { Chapter } from '@/lib/types'
+import { ListLoader } from '@/components/LoadingStates'
 
 const SPECIALTIES = [
   'All',
@@ -148,11 +149,7 @@ export default function LibraryPage() {
       </Box>
 
       {/* Loading State */}
-      {isLoading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-          <CircularProgress />
-        </Box>
-      )}
+      {isLoading && <ListLoader count={5} />}
 
       {/* Error State */}
       {error && (

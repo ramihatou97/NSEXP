@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Providers } from './providers'
 import { Navigation } from '@/components/layout/Navigation'
 import { Footer } from '@/components/layout/Footer'
+import { GlobalKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
 import './globals.css'
 
 // Use system fonts instead of Google Fonts to avoid network issues during build
@@ -44,6 +45,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <GlobalKeyboardShortcuts />
           </div>
         </Providers>
       </body>

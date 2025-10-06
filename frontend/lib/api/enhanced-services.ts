@@ -208,16 +208,50 @@ export async function performOCR(imageId: string) {
   }
 }
 
-/**
- * Synthesize comprehensive chapter with advanced features
- */
-export async function synthesizeComprehensiveChapter(data: {
+// Type definitions for comprehensive synthesis
+export interface ComprehensiveSynthesisRequest {
   topic: string
   specialty: string
+  references?: any[]
+  focus_areas?: string[]
   max_sources?: number
   include_images?: boolean
   depth?: 'basic' | 'intermediate' | 'comprehensive'
-}) {
+}
+
+export interface ComprehensiveSynthesisResponse {
+  success: boolean
+  topic: string
+  specialty: string
+  total_word_count: number
+  total_words?: number
+  section_count: number
+  sections: Record<string, string>
+  references: string[]
+  reference_count?: number
+  image_count?: number
+  quality_metrics?: {
+    completeness: number
+    completeness_score?: number
+    accuracy: number
+    evidence_level: string
+    estimated_reading_time_minutes?: number
+    average_section_length?: number
+    reference_density?: number
+  }
+  metadata: {
+    generated_at: string
+    model: string
+    sources_used: number
+    quality_score?: number
+  }
+  error?: string
+}
+
+/**
+ * Synthesize comprehensive chapter with advanced features
+ */
+export async function synthesizeComprehensiveChapter(data: ComprehensiveSynthesisRequest): Promise<ComprehensiveSynthesisResponse> {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
   
   try {
@@ -238,6 +272,17 @@ export async function synthesizeComprehensiveChapter(data: {
     console.error('Comprehensive synthesis error:', error)
     return {
       success: false,
+      topic: data.topic,
+      specialty: data.specialty,
+      total_word_count: 0,
+      section_count: 0,
+      sections: {},
+      references: [],
+      metadata: {
+        generated_at: new Date().toISOString(),
+        model: 'unknown',
+        sources_used: 0,
+      },
       error: error instanceof Error ? error.message : 'Synthesis failed',
     }
   }

@@ -11,7 +11,14 @@
       "Bash(grep:*)",
       "Bash(curl:*)",
       "Bash(python:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(find:*)",
+      "Bash(awk:*)",
+      "Bash(if [ -d \"node_modules\" ])",
+      "Bash(then echo \"node_modules EXISTS\")",
+      "Bash(else echo \"node_modules MISSING - npm install needed\")",
+      "Bash(fi)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
