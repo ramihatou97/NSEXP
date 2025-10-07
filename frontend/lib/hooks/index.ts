@@ -34,7 +34,7 @@ async function fetchAPI(endpoint: string, options?: RequestInit) {
 export function useChapter(chapterId: string) {
   return useQuery({
     queryKey: ['chapter', chapterId],
-    queryFn: () => fetchAPI(`/chapters/${chapterId}`),
+    queryFn: ({ signal }) => fetchAPI(`/chapters/${chapterId}`, { signal }),
     enabled: !!chapterId,
   })
 }
@@ -55,7 +55,7 @@ export function useChapters(options?: {
   const queryString = queryParams.toString()
   return useQuery({
     queryKey: ['chapters', options],
-    queryFn: () => fetchAPI(`/chapters${queryString ? `?${queryString}` : ''}`),
+    queryFn: ({ signal }) => fetchAPI(`/chapters${queryString ? `?${queryString}` : ''}`, { signal }),
   })
 }
 
@@ -127,7 +127,7 @@ export function useCitationNetwork(chapterId?: string | null) {
   const queryParam = chapterId ? `?chapter_id=${chapterId}` : ''
   return useQuery({
     queryKey: ['citation-network', chapterId],
-    queryFn: () => fetchAPI(`/citations/network${queryParam}`),
+    queryFn: ({ signal }) => fetchAPI(`/citations/network${queryParam}`, { signal }),
     enabled: true,
   })
 }
@@ -146,7 +146,7 @@ export function useProcedures(options?: {
   const queryString = queryParams.toString()
   return useQuery({
     queryKey: ['procedures', options],
-    queryFn: () => fetchAPI(`/procedures${queryString ? `?${queryString}` : ''}`),
+    queryFn: ({ signal }) => fetchAPI(`/procedures${queryString ? `?${queryString}` : ''}`, { signal }),
   })
 }
 
@@ -156,7 +156,7 @@ export function useProcedures(options?: {
 export function useProcedure(procedureId: string | null) {
   return useQuery({
     queryKey: ['procedure', procedureId],
-    queryFn: () => fetchAPI(`/procedures/${procedureId}`),
+    queryFn: ({ signal }) => fetchAPI(`/procedures/${procedureId}`, { signal }),
     enabled: !!procedureId,
   })
 }
@@ -188,7 +188,7 @@ export function useQAHistory(options?: {
   const queryString = queryParams.toString()
   return useQuery({
     queryKey: ['qa-history', options],
-    queryFn: () => fetchAPI(`/qa/history${queryString ? `?${queryString}` : ''}`),
+    queryFn: ({ signal }) => fetchAPI(`/qa/history${queryString ? `?${queryString}` : ''}`, { signal }),
   })
 }
 
@@ -199,7 +199,7 @@ export function useReferences(options?: { limit?: number }) {
   const queryParams = options?.limit ? `?limit=${options.limit}` : ''
   return useQuery({
     queryKey: ['references', options],
-    queryFn: () => fetchAPI(`/references${queryParams}`),
+    queryFn: ({ signal }) => fetchAPI(`/references${queryParams}`, { signal }),
   })
 }
 
@@ -250,7 +250,7 @@ export function useSearch(params: { query: string; search_type?: string; limit?:
   const queryString = queryParams.toString()
   return useQuery({
     queryKey: ['search', params],
-    queryFn: () => fetchAPI(`/search?${queryString}`),
+    queryFn: ({ signal }) => fetchAPI(`/search?${queryString}`, { signal }),
     enabled: options?.enabled !== false && params.query.length > 0,
   })
 }
@@ -261,9 +261,10 @@ export function useSearch(params: { query: string; search_type?: string; limit?:
 export function useSemanticSearch(params: { query: string; limit?: number }, options?: any) {
   return useQuery({
     queryKey: ['semantic-search', params],
-    queryFn: () => fetchAPI('/search/semantic', {
+    queryFn: ({ signal }) => fetchAPI('/search/semantic', {
       method: 'POST',
       body: JSON.stringify(params),
+      signal,
     }),
     enabled: options?.enabled !== false && params.query.length > 0,
   })
@@ -275,7 +276,7 @@ export function useSemanticSearch(params: { query: string; limit?: number }, opt
 export function usePreferences() {
   return useQuery({
     queryKey: ['preferences'],
-    queryFn: () => fetchAPI('/preferences'),
+    queryFn: ({ signal }) => fetchAPI('/preferences', { signal }),
   })
 }
 

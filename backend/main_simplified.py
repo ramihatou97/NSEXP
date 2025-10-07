@@ -207,6 +207,62 @@ async def delete_chapter(chapter_id: str):
     return await delete_chapter_by_id(chapter_id)
 
 
+@app.post("/api/v1/library/bulk-delete")
+async def bulk_delete_chapters(data: dict):
+    """Bulk delete chapters"""
+    ids = data.get("ids", [])
+    if not ids:
+        return {"success": False, "message": "No IDs provided"}
+
+    from services.chapter_service import delete_chapter_by_id
+    deleted_count = 0
+    errors = []
+
+    for chapter_id in ids:
+        try:
+            await delete_chapter_by_id(chapter_id)
+            deleted_count += 1
+        except Exception as e:
+            errors.append({"id": chapter_id, "error": str(e)})
+
+    return {
+        "success": True,
+        "deleted_count": deleted_count,
+        "total": len(ids),
+        "errors": errors
+    }
+
+
+@app.patch("/api/v1/library/bulk-update")
+async def bulk_update_chapters(data: dict):
+    """Bulk update chapters"""
+    ids = data.get("ids", [])
+    update_data = data.get("data", {})
+
+    if not ids:
+        return {"success": False, "message": "No IDs provided"}
+    if not update_data:
+        return {"success": False, "message": "No update data provided"}
+
+    from services.chapter_service import update_existing_chapter
+    updated_count = 0
+    errors = []
+
+    for chapter_id in ids:
+        try:
+            await update_existing_chapter(chapter_id, update_data)
+            updated_count += 1
+        except Exception as e:
+            errors.append({"id": chapter_id, "error": str(e)})
+
+    return {
+        "success": True,
+        "updated_count": updated_count,
+        "total": len(ids),
+        "errors": errors
+    }
+
+
 # ============= REFERENCE ENDPOINTS (Core Functionality) =============
 
 @app.get("/api/v1/references")
@@ -981,6 +1037,78 @@ async def get_behavioral_suggestions(
         return JSONResponse(
             status_code=500,
             content={"error": "Suggestion retrieval failed", "details": str(e)}
+        )
+
+
+# ============= ANALYTICS ENDPOINTS =============
+
+@app.get("/api/v1/analytics/dashboard")
+async def get_dashboard_analytics():
+    """Get dashboard analytics and metrics"""
+    try:
+        # TODO: Replace with actual database queries
+        from datetime import datetime, timedelta
+        import random
+
+        # Mock data for now - replace with real queries
+        return {
+            "metrics": {
+                "totalChapters": 47,
+                "chaptersChange": "+3 this week",
+                "recentSearches": random.randint(100, 150),
+                "searchesChange": f"+{random.randint(10, 20)}%",
+                "totalViews": random.randint(1500, 2000),
+                "viewsChange": f"+{random.randint(15, 30)}%",
+                "activeToday": random.randint(5, 12),
+                "activeTodayChange": f"+{random.randint(1, 4)}",
+            },
+            "recentActivity": [
+                {
+                    "id": "1",
+                    "type": "create",
+                    "title": "Created chapter on Advanced Neurosurgical Techniques",
+                    "timestamp": "2 hours ago",
+                    "details": "Neurosurgery General"
+                }
+            ],
+            "popularContent": [
+                {
+                    "id": "1",
+                    "title": "Craniotomy Procedures",
+                    "views": 234,
+                    "specialty": "Neurosurgery General"
+                }
+            ],
+            "activityByHour": [random.randint(0, 25) for _ in range(24)]
+        }
+    except Exception as e:
+        logger.error(f"Dashboard analytics failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Failed to retrieve dashboard data", "details": str(e)}
+        )
+
+
+@app.get("/api/v1/analytics/activity")
+async def get_user_activity(
+    limit: int = 50,
+    days: int = 7
+):
+    """Get user activity history"""
+    try:
+        # TODO: Replace with actual activity tracking
+        return {
+            "activities": [],
+            "summary": {
+                "totalActions": 0,
+                "period": f"Last {days} days"
+            }
+        }
+    except Exception as e:
+        logger.error(f"Activity retrieval failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Failed to retrieve activity", "details": str(e)}
         )
 
 

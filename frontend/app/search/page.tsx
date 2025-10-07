@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
   Container,
   Typography,
@@ -28,8 +28,9 @@ import {
   MedicalServices,
 } from '@mui/icons-material'
 import Link from 'next/link'
-import { useSearch, useSemanticSearch } from '@/lib/hooks'
+import { useSearch, useSemanticSearch, useChapters } from '@/lib/hooks'
 import type { SearchResult } from '@/lib/types'
+import AdvancedFilter, { type AdvancedFilterState } from '@/components/AdvancedFilter'
 
 type SearchType = 'all' | 'chapters' | 'references' | 'procedures'
 type SearchMode = 'basic' | 'semantic'
@@ -39,6 +40,17 @@ export default function SearchPage() {
   const [searchType, setSearchType] = useState<SearchType>('all')
   const [searchMode, setSearchMode] = useState<SearchMode>('basic')
   const [submitted, setSubmitted] = useState(false)
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilterState | null>(null)
+
+  // Use chapters endpoint when searching chapters with advanced filters
+  const useAdvancedChapterSearch = searchType === 'chapters' && advancedFilters && searchMode === 'basic'
+
+  // Chapters search with filters (backend-supported: specialty, status)
+  const chaptersSearch = useChapters({
+    specialty: advancedFilters?.specialty !== 'All' ? advancedFilters?.specialty : undefined,
+    status: advancedFilters?.status !== 'all' ? advancedFilters?.status : undefined,
+    limit: 100,
+  })
 
   // Basic search
   const basicSearch = useSearch(
@@ -48,7 +60,7 @@ export default function SearchPage() {
       limit: 50,
     },
     {
-      enabled: submitted && searchMode === 'basic' && query.length > 0,
+      enabled: submitted && searchMode === 'basic' && query.length > 0 && !useAdvancedChapterSearch,
     }
   )
 
@@ -63,7 +75,97 @@ export default function SearchPage() {
     }
   )
 
-  const currentSearch = searchMode === 'basic' ? basicSearch : semanticSearch
+  // Determine which search result to use
+  let currentSearch = searchMode === 'basic' ? basicSearch : semanticSearch
+  if (useAdvancedChapterSearch && submitted) {
+    currentSearch = chaptersSearch as any
+  }
+
+  // Apply client-side filters (date range, tags, text search within fields)
+  const filteredResults = React.useMemo(() => {
+    if (!currentSearch.data) return []
+
+    let results = currentSearch.data as SearchResult[]
+
+    // Text search within specific fields (if using chapters endpoint)
+    if (useAdvancedChapterSearch && advancedFilters && query.trim()) {
+      results = results.filter((item: any) => {
+        const searchIn = advancedFilters.searchField
+        const searchText = query.toLowerCase()
+
+        if (searchIn === 'title') {
+          return item.title?.toLowerCase().includes(searchText)
+        } else if (searchIn === 'content') {
+          return item.content?.toLowerCase().includes(searchText) ||
+                 item.snippet?.toLowerCase().includes(searchText)
+        } else if (searchIn === 'metadata') {
+          return JSON.stringify(item.metadata || {}).toLowerCase().includes(searchText)
+        }
+        // 'all' - search everywhere
+        return (
+          item.title?.toLowerCase().includes(searchText) ||
+          item.content?.toLowerCase().includes(searchText) ||
+          item.snippet?.toLowerCase().includes(searchText) ||
+          JSON.stringify(item.metadata || {}).toLowerCase().includes(searchText)
+        )
+      })
+    }
+
+    // Date range filtering
+    if (advancedFilters?.dateFrom || advancedFilters?.dateTo) {
+      results = results.filter((item: any) => {
+        const itemDate = new Date(item.updated_at || item.created_at || 0)
+        if (advancedFilters.dateFrom && itemDate < new Date(advancedFilters.dateFrom)) {
+          return false
+        }
+        if (advancedFilters.dateTo && itemDate > new Date(advancedFilters.dateTo)) {
+          return false
+        }
+        return true
+      })
+    }
+
+    // Tags filtering
+    if (advancedFilters?.tags && advancedFilters.tags.length > 0) {
+      results = results.filter((item: any) => {
+        const itemTags = item.metadata?.tags || []
+        return advancedFilters.tags.some((tag: string) =>
+          itemTags.some((itemTag: string) =>
+            itemTag.toLowerCase().includes(tag.toLowerCase())
+          )
+        )
+      })
+    }
+
+    // Sorting
+    if (advancedFilters?.sortBy) {
+      const sorted = [...results]
+      switch (advancedFilters.sortBy) {
+        case 'date_desc':
+          sorted.sort((a: any, b: any) =>
+            new Date(b.updated_at || b.created_at || 0).getTime() -
+            new Date(a.updated_at || a.created_at || 0).getTime()
+          )
+          break
+        case 'date_asc':
+          sorted.sort((a: any, b: any) =>
+            new Date(a.updated_at || a.created_at || 0).getTime() -
+            new Date(b.updated_at || b.created_at || 0).getTime()
+          )
+          break
+        case 'title_asc':
+          sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''))
+          break
+        case 'title_desc':
+          sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''))
+          break
+        // 'relevance' - keep original order
+      }
+      results = sorted
+    }
+
+    return results
+  }, [currentSearch.data, advancedFilters, query, useAdvancedChapterSearch])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -76,6 +178,22 @@ export default function SearchPage() {
     setQuery('')
     setSubmitted(false)
     setSearchType('all')
+    setAdvancedFilters(null)
+  }
+
+  const handleApplyFilters = (filters: AdvancedFilterState) => {
+    setAdvancedFilters(filters)
+    if (query.trim() && submitted) {
+      // Trigger re-search with new filters
+      currentSearch.refetch()
+    }
+  }
+
+  const handleResetFilters = () => {
+    setAdvancedFilters(null)
+    if (query.trim() && submitted) {
+      currentSearch.refetch()
+    }
   }
 
   const getResultIcon = (type: string) => {
@@ -172,6 +290,13 @@ export default function SearchPage() {
         </form>
       </Paper>
 
+      {/* Advanced Filters */}
+      <AdvancedFilter
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
+        initialFilters={advancedFilters || undefined}
+      />
+
       {/* Loading State */}
       {currentSearch.isLoading && (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
@@ -195,7 +320,7 @@ export default function SearchPage() {
           {/* Results Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
             <Typography variant="h6">
-              {currentSearch.data?.length || 0} result(s) found
+              {filteredResults.length} result(s) found
               {searchMode === 'semantic' && (
                 <Chip
                   label="AI-Powered"
@@ -204,8 +329,16 @@ export default function SearchPage() {
                   sx={{ ml: 1 }}
                 />
               )}
+              {advancedFilters && (
+                <Chip
+                  label="Filtered"
+                  size="small"
+                  color="secondary"
+                  sx={{ ml: 1 }}
+                />
+              )}
             </Typography>
-            {currentSearch.data && currentSearch.data.length > 0 && (
+            {filteredResults.length > 0 && (
               <Button size="small" onClick={handleReset}>
                 Clear Search
               </Button>
@@ -213,7 +346,7 @@ export default function SearchPage() {
           </Box>
 
           {/* Empty State */}
-          {(!currentSearch.data || currentSearch.data.length === 0) && (
+          {filteredResults.length === 0 && (
             <Paper sx={{ p: 6, textAlign: 'center' }}>
               <SearchIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
               <Typography variant="h6" color="text.secondary" gutterBottom>
@@ -226,9 +359,9 @@ export default function SearchPage() {
           )}
 
           {/* Results List */}
-          {currentSearch.data && currentSearch.data.length > 0 && (
+          {filteredResults.length > 0 && (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {currentSearch.data.map((result: SearchResult) => (
+              {filteredResults.map((result: SearchResult) => (
                 <Card
                   key={result.id}
                   component={Link}

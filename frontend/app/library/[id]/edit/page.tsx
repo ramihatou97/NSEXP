@@ -28,6 +28,7 @@ import {
 import { useChapter, useUpdateChapter } from '@/lib/hooks'
 import { useAutosaveSimple } from '@/lib/hooks/useAutosave'
 import type { Chapter, UpdateChapterRequest } from '@/lib/types'
+import { useSnackbar } from 'notistack'
 
 const SPECIALTIES = [
   'Neurosurgery General',
@@ -46,6 +47,7 @@ export default function ChapterEditPage() {
   const params = useParams()
   const router = useRouter()
   const chapterId = params?.id as string
+  const { enqueueSnackbar } = useSnackbar()
 
   const { data: chapter, isLoading, error } = useChapter(chapterId)
   const updateChapter = useUpdateChapter()
@@ -133,9 +135,10 @@ export default function ChapterEditPage() {
         id: chapterId,
         data: updateData,
       })
+      enqueueSnackbar('Chapter updated successfully', { variant: 'success' })
       router.push(`/library/${chapterId}`)
     } catch (error) {
-      console.error('Failed to update chapter:', error)
+      enqueueSnackbar('Failed to update chapter. Please try again.', { variant: 'error' })
     }
   }
 

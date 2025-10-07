@@ -32,6 +32,7 @@ import {
 import Link from 'next/link'
 import { useReferences, useCreateReference, useDeleteReference } from '@/lib/hooks'
 import type { CreateReferenceRequest } from '@/lib/types'
+import { useSnackbar } from 'notistack'
 
 export default function ReferencesPage() {
   const [openDialog, setOpenDialog] = useState(false)
@@ -44,6 +45,7 @@ export default function ReferencesPage() {
     pmid: '',
   })
   const [authorInput, setAuthorInput] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
 
   const { data: references, isLoading, error, refetch } = useReferences({ limit: 100 })
   const createReference = useCreateReference()
@@ -90,9 +92,10 @@ export default function ReferencesPage() {
 
     try {
       await createReference.mutateAsync(formData)
+      enqueueSnackbar('Reference created successfully', { variant: 'success' })
       handleCloseDialog()
     } catch (error) {
-      console.error('Failed to create reference:', error)
+      enqueueSnackbar('Failed to create reference. Please try again.', { variant: 'error' })
     }
   }
 
@@ -100,8 +103,9 @@ export default function ReferencesPage() {
     if (confirm('Are you sure you want to delete this reference?')) {
       try {
         await deleteReference.mutateAsync(id)
+        enqueueSnackbar('Reference deleted successfully', { variant: 'success' })
       } catch (error) {
-        console.error('Failed to delete reference:', error)
+        enqueueSnackbar('Failed to delete reference. Please try again.', { variant: 'error' })
       }
     }
   }

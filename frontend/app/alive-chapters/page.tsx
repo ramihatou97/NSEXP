@@ -31,6 +31,7 @@ import {
   getChapterHealth,
   getBehavioralSuggestions,
 } from '@/lib/api/enhanced-services'
+import { useSnackbar } from 'notistack'
 
 export default function AliveChaptersPage() {
   const [status, setStatus] = useState<any>(null)
@@ -39,6 +40,7 @@ export default function AliveChaptersPage() {
   const [chapterId, setChapterId] = useState('demo-chapter-001')
   const [questionResult, setQuestionResult] = useState<any>(null)
   const [health, setHealth] = useState<any>(null)
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     loadStatus()
@@ -49,7 +51,7 @@ export default function AliveChaptersPage() {
       const response = await getAliveChapterStatus(chapterId)
       setStatus(response)
     } catch (err) {
-      console.error('Failed to load status:', err)
+      enqueueSnackbar('Failed to load chapter status', { variant: 'error' })
     } finally {
       setLoading(false)
     }
@@ -71,7 +73,7 @@ export default function AliveChaptersPage() {
       const response = await getChapterHealth(chapterId)
       setHealth(response)
     } catch (err) {
-      console.error('Failed to load health:', err)
+      enqueueSnackbar('Failed to load chapter health data', { variant: 'error' })
     }
   }
 

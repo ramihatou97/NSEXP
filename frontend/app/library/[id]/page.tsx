@@ -34,11 +34,13 @@ import {
 import Link from 'next/link'
 import { useChapter, useDeleteChapter } from '@/lib/hooks'
 import { exportApi, type ExportFormat } from '@/lib/api/export'
+import { useSnackbar } from 'notistack'
 
 export default function ChapterDetailPage() {
   const params = useParams()
   const router = useRouter()
   const chapterId = params?.id as string
+  const { enqueueSnackbar } = useSnackbar()
 
   const { data: chapter, isLoading, error } = useChapter(chapterId)
   const deleteChapter = useDeleteChapter()
@@ -59,9 +61,9 @@ export default function ChapterDetailPage() {
     try {
       await exportApi.downloadChapter(chapterId, format)
       handleExportClose()
+      enqueueSnackbar('Chapter exported successfully', { variant: 'success' })
     } catch (error) {
-      console.error('Export failed:', error)
-      alert('Export failed. Please try again.')
+      enqueueSnackbar('Export failed. Please try again.', { variant: 'error' })
     }
   }
 
@@ -69,9 +71,10 @@ export default function ChapterDetailPage() {
     if (confirm('Are you sure you want to delete this chapter? This action cannot be undone.')) {
       try {
         await deleteChapter.mutateAsync(chapterId)
+        enqueueSnackbar('Chapter deleted successfully', { variant: 'success' })
         router.push('/library')
       } catch (error) {
-        console.error('Failed to delete chapter:', error)
+        enqueueSnackbar('Failed to delete chapter. Please try again.', { variant: 'error' })
       }
     }
   }

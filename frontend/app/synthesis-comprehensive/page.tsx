@@ -193,20 +193,24 @@ export default function ComprehensiveSynthesisPage() {
                   />
                   <Chip
                     icon={<Assessment />}
-                    label={`${result.total_words.toLocaleString()} words`}
+                    label={`${(result.total_words || result.total_word_count).toLocaleString()} words`}
                     size="small"
                   />
-                  <Chip
-                    icon={<Timer />}
-                    label={`${result.quality_metrics.estimated_reading_time_minutes} min read`}
-                    size="small"
-                  />
-                  <Chip
-                    icon={<CheckCircle />}
-                    label={`${Math.round(result.quality_metrics.completeness_score * 100)}% complete`}
-                    color="success"
-                    size="small"
-                  />
+                  {result.quality_metrics?.estimated_reading_time_minutes && (
+                    <Chip
+                      icon={<Timer />}
+                      label={`${result.quality_metrics.estimated_reading_time_minutes} min read`}
+                      size="small"
+                    />
+                  )}
+                  {result.quality_metrics?.completeness_score && (
+                    <Chip
+                      icon={<CheckCircle />}
+                      label={`${Math.round(result.quality_metrics.completeness_score * 100)}% complete`}
+                      color="success"
+                      size="small"
+                    />
+                  )}
                 </Stack>
 
                 <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -214,7 +218,7 @@ export default function ComprehensiveSynthesisPage() {
                     <Card variant="outlined">
                       <CardContent>
                         <Typography variant="h4" color="primary">
-                          {result.reference_count}
+                          {result.reference_count || result.references?.length || 0}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
                           References
@@ -226,7 +230,7 @@ export default function ComprehensiveSynthesisPage() {
                     <Card variant="outlined">
                       <CardContent>
                         <Typography variant="h4" color="primary">
-                          {result.image_count}
+                          {result.image_count || 0}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
                           Images
@@ -234,30 +238,34 @@ export default function ComprehensiveSynthesisPage() {
                       </CardContent>
                     </Card>
                   </Grid>
-                  <Grid item xs={6} sm={3}>
-                    <Card variant="outlined">
-                      <CardContent>
-                        <Typography variant="h4" color="primary">
-                          {result.quality_metrics.average_section_length}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Avg Words/Section
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={6} sm={3}>
-                    <Card variant="outlined">
-                      <CardContent>
-                        <Typography variant="h4" color="primary">
-                          {(result.quality_metrics.reference_density * 1000).toFixed(1)}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Citations/1000 words
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
+                  {result.quality_metrics?.average_section_length && (
+                    <Grid item xs={6} sm={3}>
+                      <Card variant="outlined">
+                        <CardContent>
+                          <Typography variant="h4" color="primary">
+                            {result.quality_metrics.average_section_length}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Avg Words/Section
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  )}
+                  {result.quality_metrics?.reference_density && (
+                    <Grid item xs={6} sm={3}>
+                      <Card variant="outlined">
+                        <CardContent>
+                          <Typography variant="h4" color="primary">
+                            {(result.quality_metrics.reference_density * 1000).toFixed(1)}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Citations/1000 words
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  )}
                 </Grid>
               </Paper>
 

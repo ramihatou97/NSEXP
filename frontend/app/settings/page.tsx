@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material'
 import { usePreferences, useUpdatePreferences } from '@/lib/hooks'
 import type { UserPreferences } from '@/lib/types'
+import { useSnackbar } from 'notistack'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -49,6 +50,7 @@ export default function SettingsPage() {
   const [tabValue, setTabValue] = useState(0)
   const { data: preferences, isLoading } = usePreferences()
   const updatePreferences = useUpdatePreferences()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [formData, setFormData] = useState<UserPreferences | null>(null)
 
@@ -64,8 +66,9 @@ export default function SettingsPage() {
 
     try {
       await updatePreferences.mutateAsync(formData)
+      enqueueSnackbar('Preferences saved successfully', { variant: 'success' })
     } catch (error) {
-      console.error('Failed to save preferences:', error)
+      enqueueSnackbar('Failed to save preferences. Please try again.', { variant: 'error' })
     }
   }
 
