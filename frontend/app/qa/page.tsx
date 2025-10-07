@@ -28,6 +28,7 @@ import {
   FilterList,
 } from '@mui/icons-material'
 import { useQAQuestion, useQAHistory, useChapters } from '@/lib/hooks'
+import { ListLoader } from '@/components/LoadingStates'
 
 export default function QAPage() {
   const [question, setQuestion] = useState('')
@@ -201,8 +202,8 @@ export default function QAPage() {
 
               <Collapse in={showHistory}>
                 {historyLoading && (
-                  <Box sx={{ textAlign: 'center', py: 3 }}>
-                    <CircularProgress size={40} />
+                  <Box sx={{ py: 2 }}>
+                    <ListLoader count={2} />
                   </Box>
                 )}
 

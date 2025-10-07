@@ -31,6 +31,7 @@ import Link from 'next/link'
 import { useSearch, useSemanticSearch, useChapters } from '@/lib/hooks'
 import type { SearchResult } from '@/lib/types'
 import AdvancedFilter, { type AdvancedFilterState } from '@/components/AdvancedFilter'
+import { ListLoader } from '@/components/LoadingStates'
 
 type SearchType = 'all' | 'chapters' | 'references' | 'procedures'
 type SearchMode = 'basic' | 'semantic'
@@ -298,11 +299,7 @@ export default function SearchPage() {
       />
 
       {/* Loading State */}
-      {currentSearch.isLoading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-          <CircularProgress />
-        </Box>
-      )}
+      {currentSearch.isLoading && <ListLoader count={3} />}
 
       {/* Error State */}
       {currentSearch.error && (
