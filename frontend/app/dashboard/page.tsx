@@ -2,8 +2,14 @@
 
 import { Container, Typography, Box, Alert, Button, CircularProgress } from '@mui/material'
 import { Dashboard as DashboardIcon, Refresh } from '@mui/icons-material'
-import UserActivityDashboard from '@/components/UserActivityDashboard'
+import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
+
+// Code splitting: Lazy load heavy dashboard component
+const UserActivityDashboard = dynamic(() => import('@/components/UserActivityDashboard'), {
+  loading: () => <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box>,
+  ssr: false
+})
 
 export default function DashboardPage() {
   const [data, setData] = useState(null)

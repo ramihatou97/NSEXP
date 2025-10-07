@@ -28,10 +28,17 @@ import {
   MedicalServices,
 } from '@mui/icons-material'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useSearch, useSemanticSearch, useChapters } from '@/lib/hooks'
 import type { SearchResult } from '@/lib/types'
-import AdvancedFilter, { type AdvancedFilterState } from '@/components/AdvancedFilter'
+import { type AdvancedFilterState } from '@/components/AdvancedFilter'
 import { ListLoader } from '@/components/LoadingStates'
+
+// Code splitting: Lazy load AdvancedFilter component
+const AdvancedFilter = dynamic(() => import('@/components/AdvancedFilter'), {
+  loading: () => <Box sx={{ py: 2 }}><CircularProgress size={24} /></Box>,
+  ssr: false
+})
 
 type SearchType = 'all' | 'chapters' | 'references' | 'procedures'
 type SearchMode = 'basic' | 'semantic'

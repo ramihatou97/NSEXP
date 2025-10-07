@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import {
   Container,
   Typography,
@@ -30,13 +30,22 @@ import {
   TableRows,
 } from '@mui/icons-material'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useChapters, useDeleteChapter } from '@/lib/hooks'
 import type { Chapter } from '@/lib/types'
 import { ListLoader } from '@/components/LoadingStates'
 import { useSnackbar } from 'notistack'
-import { DataTable, type Column } from '@/components/DataTable'
-import BulkOperationsToolbar from '@/components/BulkOperationsToolbar'
+import { type Column } from '@/components/DataTable'
+
+// Code splitting: Lazy load heavy table components
+const DataTable = dynamic(() => import('@/components/DataTable').then(mod => ({ default: mod.DataTable })), {
+  loading: () => <ListLoader count={5} />,
+  ssr: false
+})
+const BulkOperationsToolbar = dynamic(() => import('@/components/BulkOperationsToolbar'), {
+  ssr: false
+})
 
 const SPECIALTIES = [
   'All',
@@ -69,7 +78,8 @@ export default function LibraryPage() {
 
   const deleteChapter = useDeleteChapter()
 
-  const handleDelete = async (id: string) => {
+  // useCallback: Memoize delete handler to prevent re-renders
+  const handleDelete = useCallback(async (id: string) => {
     if (confirm('Are you sure you want to delete this chapter?')) {
       try {
         await deleteChapter.mutateAsync(id)
@@ -78,9 +88,9 @@ export default function LibraryPage() {
         enqueueSnackbar('Failed to delete chapter. Please try again.', { variant: 'error' })
       }
     }
-  }
+  }, [deleteChapter, enqueueSnackbar])
 
-  const handleBulkDelete = async () => {
+  const handleBulkDelete = useCallback(async () => {
     const ids = Array.from(selectedRows)
     try {
       // Call bulk delete API
@@ -99,9 +109,9 @@ export default function LibraryPage() {
       enqueueSnackbar('Failed to delete chapters. Please try again.', { variant: 'error' })
       throw error
     }
-  }
+  }, [selectedRows, enqueueSnackbar, refetch])
 
-  const handleBulkUpdateStatus = async (status: string) => {
+  const handleBulkUpdateStatus = useCallback(async (status: string) => {
     const ids = Array.from(selectedRows)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/library/bulk-update`, {
@@ -119,9 +129,9 @@ export default function LibraryPage() {
       enqueueSnackbar('Failed to update chapters. Please try again.', { variant: 'error' })
       throw error
     }
-  }
+  }, [selectedRows, enqueueSnackbar, refetch])
 
-  const handleBulkUpdateSpecialty = async (specialty: string) => {
+  const handleBulkUpdateSpecialty = useCallback(async (specialty: string) => {
     const ids = Array.from(selectedRows)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/library/bulk-update`, {
@@ -139,9 +149,10 @@ export default function LibraryPage() {
       enqueueSnackbar('Failed to update chapters. Please try again.', { variant: 'error' })
       throw error
     }
-  }
+  }, [selectedRows, enqueueSnackbar, refetch])
 
-  const getStatusColor = (status: string) => {
+  // useMemo: Memoize status color function
+  const getStatusColor = useMemo(() => (status: string) => {
     switch (status) {
       case 'published':
         return 'success'
@@ -152,7 +163,7 @@ export default function LibraryPage() {
       default:
         return 'info'
     }
-  }
+  }, [])
 
   // Define table columns
   const columns: Column<any>[] = [
