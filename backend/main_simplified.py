@@ -5,6 +5,7 @@ All functionality retained, authentication and multi-user complexity removed
 
 from fastapi import FastAPI, BackgroundTasks, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import logging
@@ -28,6 +29,9 @@ from middleware.metrics_middleware import (
     PerformanceMiddleware,
     HealthCheckMiddleware
 )
+from middleware.timeout_middleware import TimeoutMiddleware
+from middleware.csrf_middleware import CSRFMiddleware
+from middleware.csp_middleware import CSPMiddleware
 
 # Setup logging with JSON format and file rotation
 logger = setup_logging(
@@ -82,7 +86,17 @@ app.add_middleware(HealthCheckMiddleware)
 # Performance tracking middleware
 app.add_middleware(PerformanceMiddleware)
 
+# Timeout middleware (30s default, 5min for synthesis)
+app.add_middleware(TimeoutMiddleware, timeout_seconds=30.0, synthesis_timeout=300.0)
+
+# Compression middleware (compress responses > 1000 bytes)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
 # Security middlewares
+app.add_middleware(CSPMiddleware, report_only=False)  # Content Security Policy
+app.add_middleware(CSRFMiddleware, cookie_secure=False, exempt_urls=[
+    "/docs", "/redoc", "/openapi.json", "/health", "/metrics", "/api/v1/ws"
+])  # CSRF Protection (cookie_secure=False for dev, True for prod)
 app.add_middleware(InputSanitizationMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware, requests_per_minute=60)
