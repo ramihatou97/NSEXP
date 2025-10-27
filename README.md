@@ -104,6 +104,7 @@ The Neurosurgical Knowledge Management System is a comprehensive, production-rea
 - **🤖 AI-Powered Synthesis**: Generate comprehensive neurosurgical chapters from multiple sources
 - **🔍 Intelligent Search**: Semantic search across medical textbooks, papers, and guidelines
 - **💬 Interactive Q&A**: Context-aware question answering with evidence-based references
+- **🗺️ Conceptual Knowledge Map**: Interactive visualization of relationships between chapters, references, and procedures
 - **🔗 Citation Networks**: Visualize and navigate complex relationships between literature
 - **🧬 Behavioral Learning**: Adapts to user patterns and anticipates knowledge needs
 - **🏥 Clinical Integration**: ICD-10, CPT codes, clinical trials, and surgical planning
