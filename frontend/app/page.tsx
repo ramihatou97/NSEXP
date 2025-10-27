@@ -13,6 +13,7 @@ import {
   Psychology,
   Biotech,
   MedicalServices,
+  AccountTree,
 } from '@mui/icons-material'
 import { Button, Card, CardContent, Typography, Grid, Container, Box, Chip } from '@mui/material'
 import Link from 'next/link'
@@ -69,6 +70,14 @@ const features: Array<{
     icon: Science,
     href: '/alive-chapters',
     color: 'info',
+    badge: 'NEW',
+  },
+  {
+    title: 'Conceptual Knowledge Map',
+    description: 'Visualize relationships between chapters, references, and procedures - NEW in v2.2!',
+    icon: AccountTree,
+    href: '/conceptual-map',
+    color: 'success',
     badge: 'NEW',
   },
   {

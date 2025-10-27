@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conceptual Map Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        button {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 1.5rem;
+        }
+        
+        .graph-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .graph-demo {
+            width: 100%;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .node.chapter { background: #3B82F6; }
+        .node.reference { background: #10B981; }
+        .node.procedure { background: #F59E0B; }
+        
+        .edge {
+            position: absolute;
+            height: 2px;
+            background: #999;
+            transform-origin: left center;
+            opacity: 0.4;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+        
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .stat-label {
+            color: #666;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .graph-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ Conceptual Knowledge Map</h1>
+        <p>Interactive visualization of neurosurgical knowledge relationships</p>
+    </div>
+    
+    <div class="container">
+        <!-- Controls Section -->
+        <div class="controls">
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Specialty</label>
+                    <select>
+                        <option>All Specialties</option>
+                        <option>Tumor</option>
+                        <option>Vascular</option>
+                        <option>Spine</option>
+                        <option>Functional</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Anatomical Region</label>
+                    <select>
+                        <option>All Regions</option>
+                        <option>Frontal</option>
+                        <option>Temporal</option>
+                        <option>Cervical Spine</option>
+                        <option>Lumbar Spine</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Procedure Type</label>
+                    <select>
+                        <option>All Procedures</option>
+                        <option>Craniotomy</option>
+                        <option>Laminectomy</option>
+                        <option>Fusion</option>
+                        <option>Endoscopy</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Max Nodes</label>
+                    <input type="number" value="100" min="10" max="500">
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn-secondary">Reset Filters</button>
+                <button class="btn-primary">Apply Filters</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Graph Visualization -->
+            <div class="graph-container">
+                <div class="graph-controls">
+                    <div class="control-btn" title="Zoom In">🔍+</div>
+                    <div class="control-btn" title="Zoom Out">🔍-</div>
+                    <div class="control-btn" title="Center">⊙</div>
+                    <div class="control-btn" title="Export">💾</div>
+                </div>
+                
+                <div class="graph-demo">
+                    <!-- Sample nodes -->
+                    <div class="node chapter" style="top: 20%; left: 20%;">C1</div>
+                    <div class="node chapter" style="top: 30%; left: 60%;">C2</div>
+                    <div class="node chapter" style="top: 60%; left: 40%;">C3</div>
+                    <div class="node reference" style="top: 40%; left: 30%;">R1</div>
+                    <div class="node reference" style="top: 50%; left: 70%;">R2</div>
+                    <div class="node procedure" style="top: 70%; left: 25%;">P1</div>
+                    <div class="node procedure" style="top: 75%; left: 65%;">P2</div>
+                    
+                    <!-- Central info -->
+                    <div style="text-align: center; color: #666; z-index: 1;">
+                        <h2 style="margin-bottom: 1rem;">Interactive Force Graph</h2>
+                        <p>Click, drag, and zoom to explore connections</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            C = Chapters, R = References, P = Procedures
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Legend -->
+                <div class="card">
+                    <h3>Legend</h3>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3B82F6;"></div>
+                        <span>Chapters</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #10B981;"></div>
+                        <span>References</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #F59E0B;"></div>
+                        <span>Procedures</span>
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="card">
+                    <h3>Statistics</h3>
+                    <div class="stat">
+                        <span class="stat-label">Total Nodes:</span>
+                        <span class="stat-value">100</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Edges:</span>
+                        <span class="stat-value">250</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Chapters:</span>
+                        <span class="stat-value">50</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">References:</span>
+                        <span class="stat-value">25</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Procedures:</span>
+                        <span class="stat-value">25</span>
+                    </div>
+                </div>
+                
+                <!-- Selected Node -->
+                <div class="card">
+                    <h3>Selected Node</h3>
+                    <p style="color: #666; font-size: 0.9rem;">Click a node to view details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple interactivity
+        document.querySelectorAll('.node').forEach(node => {
+            node.addEventListener('click', function() {
+                document.querySelectorAll('.node').forEach(n => n.style.border = 'none');
+                this.style.border = '3px solid #fff';
+                
+                const type = this.classList.contains('chapter') ? 'Chapter' :
+                           this.classList.contains('reference') ? 'Reference' : 'Procedure';
+                
+                document.querySelector('.card:last-child').innerHTML = `
+                    <h3>Selected Node</h3>
+                    <p style="margin-bottom: 0.5rem;"><strong>Type:</strong> ${type}</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>ID:</strong> ${this.textContent}</p>
+                    <p style="color: #666; font-size: 0.9rem;">
+                        This is a sample node in the conceptual map. In the real application,
+                        clicking a node shows detailed information including title, metadata,
+                        connected nodes, and more.
+                    </p>
+                `;
+            });
+        });
+        
+        // Simple animation
+        let angle = 0;
+        setInterval(() => {
+            angle += 0.005;
+            document.querySelectorAll('.node').forEach((node, i) => {
+                const radius = 150;
+                const nodeAngle = angle + (i * Math.PI * 2 / 7);
+                const x = 50 + Math.cos(nodeAngle) * (20 + i * 3);
+                const y = 50 + Math.sin(nodeAngle) * (20 + i * 3);
+                node.style.left = x + '%';
+                node.style.top = y + '%';
+            });
+        }, 50);
+    </script>
+</body>
+</html>

@@ -21,6 +21,7 @@ import {
   PhotoLibrary,
   Search as SearchIcon,
   Science,
+  AccountTree,
 } from '@mui/icons-material'
 
 export function Navigation() {
@@ -94,6 +95,14 @@ export function Navigation() {
           >
             Alive
           </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            href="/conceptual-map"
+            startIcon={<AccountTree />}
+          >
+            Concept Map
+          </Button>
           <Button color="inherit" component={Link} href="/references">
             References
           </Button>
@@ -141,6 +150,9 @@ export function Navigation() {
           </MenuItem>
           <MenuItem component={Link} href="/alive-chapters" onClick={handleMenuClose}>
             Alive Chapters
+          </MenuItem>
+          <MenuItem component={Link} href="/conceptual-map" onClick={handleMenuClose}>
+            Conceptual Map
           </MenuItem>
           <Divider />
           <MenuItem component={Link} href="/references" onClick={handleMenuClose}>
