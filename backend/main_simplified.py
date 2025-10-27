@@ -378,6 +378,59 @@ async def get_suggestions():
     return await get_personalized_suggestions()
 
 
+# ============= CONCEPTUAL MAP ENDPOINTS (New) =============
+
+@app.get("/api/v1/conceptual-map")
+async def get_conceptual_map(
+    specialty: str = None,
+    anatomical_region: str = None,
+    procedure_type: str = None,
+    include_references: bool = True,
+    include_procedures: bool = True,
+    max_nodes: int = 100
+):
+    """
+    Get comprehensive conceptual map of neurosurgical knowledge
+    Shows relationships between chapters, references, procedures, and anatomical regions
+    """
+    from services.conceptual_map_service import get_full_conceptual_map
+    return await get_full_conceptual_map(
+        specialty=specialty,
+        anatomical_region=anatomical_region,
+        procedure_type=procedure_type,
+        include_references=include_references,
+        include_procedures=include_procedures,
+        max_nodes=max_nodes
+    )
+
+
+@app.get("/api/v1/conceptual-map/search")
+async def search_conceptual_map(
+    query: str,
+    map_type: str = "all"
+):
+    """
+    Search for concepts in the knowledge graph
+    Types: all, chapters, references, procedures
+    """
+    from services.conceptual_map_service import search_concepts
+    return await search_concepts(query=query, map_type=map_type)
+
+
+@app.get("/api/v1/conceptual-map/node/{node_id}")
+async def get_conceptual_node_details(node_id: str):
+    """Get detailed information about a specific node in the conceptual map"""
+    from services.conceptual_map_service import get_node_details
+    return await get_node_details(node_id=node_id)
+
+
+@app.get("/api/v1/conceptual-map/clusters")
+async def get_conceptual_clusters():
+    """Get identified clusters of related concepts in the knowledge graph"""
+    from services.conceptual_map_service import get_concept_clusters
+    return await get_concept_clusters()
+
+
 # ============= NEUROSURGERY-SPECIFIC ENDPOINTS =============
 
 @app.get("/api/v1/procedures")
